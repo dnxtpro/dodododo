@@ -1,11 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle} from "@/components/ui/card";
 import clsx from "clsx";
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, subMonths, addMonths, isToday, isSameDay } from "date-fns"
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, subMonths, addMonths, isToday, isSameDay,isWithinInterval  } from "date-fns"
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import EventModal from "./ModalEvent";
 
 interface CalendarEvent {
     date: Date;
@@ -14,16 +13,18 @@ interface CalendarEvent {
 }
 interface CalendarProps {
     events: CalendarEvent[];
+    onDateSelect:(startDate: Date, endDate?: Date) => void; 
 
 }
 
 
-const Calendar = ({ events }: CalendarProps) => {   
+const Calendar = ({ events,onDateSelect }: CalendarProps) => {   
 
     const [currentDate, setCurrentDate] = useState(new Date());
-    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-    const [showModal, setShowModal] = useState(false)
- 
+    const [startDate, setStartDate] = useState<Date | null>(null); // Fecha de inicio del rango
+    const [endDate, setEndDate] = useState<Date | null>(null);     // Fecha de fin del rango
+    const [isSelectingRange, setIsSelectingRange] = useState(false); // Cont
+ const [isSelecting, setIsSelecting] = useState(false);
 
 
     const diasSemana = ["Lun", "Mar", "Mier", "Jue", "Vie", "Sab", "Dom"];
@@ -67,18 +68,47 @@ const Calendar = ({ events }: CalendarProps) => {
         }
         setPage([page + newDirection, newDirection])
     }
-    const handleDayClick = (day:Date) => {
-        setSelectedDate(day)
-        setShowModal(true)
-    }
-    const handleAddEvent = () => {
-        
-       
-        setShowModal(false);
+    const handleMouseDown = (date: Date) => {
+        setIsSelecting(true);
+        setStartDate(date);
+        setEndDate(date);
+      };
+      const handleMouseOver = (date: Date) => {
+        if (isSelecting) {
+          setEndDate(date);
+        }
+      };
+    
+      const handleMouseUp = () => {
+        setIsSelecting(false);
+        if (startDate && endDate) {
+          onDateSelect(startDate, endDate);
+        }
+      };
+    const handleDayClick = (date:Date) => {
+        if (!startDate || endDate) {
+            // Si no hay fecha de inicio o ya hay un rango seleccionado, reiniciar la selección
+            setStartDate(date);
+            setEndDate(null);
+            setIsSelectingRange(true);
+        } else if (isSelectingRange) {
+            // Si estamos en modo de selección de rango, establecer la fecha final
+            setEndDate(date);
+            setIsSelectingRange(false);
+            onDateSelect(startDate, date); // Pasar el rango de fechas seleccionado
+        }
+      };
+      const isSelectedDay = (day: Date) => {
+        if (!startDate) return false;
+        if (endDate) {
+            return isWithinInterval(day, { start: startDate, end: endDate });
+        }
+        return isSameDay(day, startDate);
     };
+   
     return (
-        <>
-            <Card className="mx-auto w-4/6 mt-10">
+        <div className="col-start-4 col-span-2">
+            <Card className="">
                 <CardHeader >
 
                     <div className="space-x-3 mx-auto flex flex-row items-center ">
@@ -93,7 +123,7 @@ const Calendar = ({ events }: CalendarProps) => {
 
                 </CardHeader>
             </Card>
-            <div className="relative w-4/6 mx-auto mt-2" >
+            <div className="relative" >
                 <AnimatePresence custom={direction}>
                     <motion.div
                         key={page}
@@ -106,7 +136,7 @@ const Calendar = ({ events }: CalendarProps) => {
                             x: { type: "spring", stiffness: 500, damping: 25 },
                             opacity: { duration: 0.5 },
                         }}
-                        className="grid grid-cols-7 absolute inset-0 "
+                        className="grid grid-cols-7 absolute inset-0 border rounded-md  shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)] "
                     >
                         {diasSemana.map((day) => {
                             return <div className="font-bold text-center border rounded-md " key={day}>{day}</div>
@@ -117,25 +147,30 @@ const Calendar = ({ events }: CalendarProps) => {
                         {diasMes.map((day, index) => {
                             return <div className={clsx(" text-center border rounded-md p-2 hover:bg-slate-300 cursor-pointer", {
                                 "bg-slate-700 text-white font-bold border-accent  hover:bg-slate-500": isToday(day),
+                                "bg-blue-500 text-white": isSelectedDay(day)
 
-                            })} key={index} onClick={() => handleDayClick(day)}>
+                            })} key={index}
+                            onMouseDown={() => handleMouseDown(day)}
+                            onMouseOver={() => handleMouseOver(day)}
+                            onMouseUp={handleMouseUp}
+                             onClick={() => handleDayClick(day)}>
                                 {format(day, "d")}
                                 {events
                                     .filter((event) => isSameDay(event.date, day)).map((event) => {
                                         return <div key={event.title}>{event.title}</div>
                                     })}
+                                  
                             </div>
                         })}
+                         
+        
                     </motion.div>
+                    
                 </AnimatePresence>
 
             </div>
-            <EventModal
-            showModal={showModal}
-        setShowModal={setShowModal}
-        selectedDate={selectedDate}
-        handleAddEvent={handleAddEvent}/>
-        </>
+            </div>
+           
     )
 }
 export default Calendar;

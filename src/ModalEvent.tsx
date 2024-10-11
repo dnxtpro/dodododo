@@ -13,11 +13,30 @@ interface EventModalProps {
   handleAddEvent: (event: { title: string; description: string; date: Date }) => void;
 }
 
-const modalVariants = {
-  hidden: { opacity: 0, scale: 0.8 },
-  visible: { opacity: 1, scale: 1 },
-};
 
+
+const dropIn = {
+    hidden: {
+      scale:0,
+      y: "-100vh",
+      opacity: 0,
+    },
+    visible: {
+      scale:1,  
+      y: "0",
+      opacity: 1,
+      transition: {
+        duration: 1,
+        type: "spring",
+        damping: 25,
+        stiffness: 500,
+      },
+    },
+    exit: {
+      y: "100vh",
+      opacity: 0,
+    },
+  };
 const EventModal: React.FC<EventModalProps> = ({
   showModal,
   setShowModal,
@@ -46,14 +65,18 @@ const EventModal: React.FC<EventModalProps> = ({
       {showModal && (
         <motion.div
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-          initial="hidden"
-          animate="visible"
-          exit="hidden"
+          
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
         >
           <motion.div
             className="bg-white p-6 rounded-lg w-96"
-            variants={modalVariants}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            variants={dropIn}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            
           >
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">Guardar Evento</h3>
