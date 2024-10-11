@@ -103,7 +103,7 @@ const handleDateSelect = (startDate: Date, endDate?: Date) => {
             <Route path="/profile" element={<Profile />} />
           </Routes>
         </div>
-       <div className="grid grid-cols-6 space-x-6 mx-4 my-4">
+       <div className="grid grid-cols-6 space-x-6 mx-4 my-4 md:space-x-0">
        <Tareas tareas={filteredTareas}/>
        <Calendar   events={[{date:subDays(new Date(),6),title:"sexo matutino",description:"sexo deverdad"}]} onDateSelect={handleDateSelect}         />
         
