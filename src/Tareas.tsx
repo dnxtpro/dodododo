@@ -57,7 +57,7 @@ const Tareas = ({tareas}:TareasProps)=>{
                         </motion.li>
                     )
                     )}
-                    <li><img src="./lol.gif" alt="" /></li>
+                   
                 </ul>
             <Timer></Timer>
         
