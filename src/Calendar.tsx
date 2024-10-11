@@ -14,20 +14,16 @@ interface CalendarEvent {
 }
 interface CalendarProps {
     events: CalendarEvent[];
-    onAddEvent: (event: CalendarEvent) => void;
+
 }
 
-interface Eventos{
-    date:Date;
-    title:string;
-    description:string;
-}
-const Calendar = ({ events, onAddEvent }: CalendarProps) => {   
+
+const Calendar = ({ events }: CalendarProps) => {   
 
     const [currentDate, setCurrentDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
     const [showModal, setShowModal] = useState(false)
-    const [eventos, setEventos] = useState<CalendarEvent[]>([]);
+ 
 
 
     const diasSemana = ["Lun", "Mar", "Mier", "Jue", "Vie", "Sab", "Dom"];
@@ -75,10 +71,9 @@ const Calendar = ({ events, onAddEvent }: CalendarProps) => {
         setSelectedDate(day)
         setShowModal(true)
     }
-    const handleAddEvent = (event: { title: string; description: string; date: Date }) => {
-        const newEvent: CalendarEvent = { title: event.title, description: event.description, date: event.date };
-        onAddEvent(event); 
-        setEventos((prevEventos) => [...prevEventos, newEvent]); // Cambiar aquí
+    const handleAddEvent = () => {
+        
+       
         setShowModal(false);
     };
     return (

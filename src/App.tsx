@@ -5,22 +5,14 @@ import Profile from './cmpnt/auth/Profile'
 import Navbar from "./NavBar"
 import Calendar from "./Calendar"
 import { subDays } from "date-fns"
-import { useState } from "react"
-import {Routes,Route,Link} from "react-router-dom"
 
-interface CalendarEvent {
-  date: Date;
-  description: string;
-  title: string;
-}
+import {Routes,Route} from "react-router-dom"
+
 
 function App() {
  
-  const [events, setEvents] = useState<CalendarEvent[]>([]); // Estado de eventos
-
-  const addEvent = (newEvent: CalendarEvent) => {
-      setEvents((prevEvents) => [...prevEvents, newEvent]); // Agrega el nuevo evento
-  };
+ 
+ 
   return (
     <>
       <div className="w-full">
@@ -33,7 +25,7 @@ function App() {
           </Routes>
         </div>
         <Calendar  events={[{date:subDays(new Date(),6),title:"sexo matutino",description:"sexo deverdad"}]} 
-        onAddEvent={addEvent}
+       
        />
        
         
