@@ -5,7 +5,6 @@ import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, subMonths,
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import EventModal from "./ModalEvent";
 
 interface CalendarEvent {
     date: Date;
