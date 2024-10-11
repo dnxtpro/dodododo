@@ -12,7 +12,8 @@ interface Tarea {
   }
   
   interface TareasProps {
-    tareas: Tarea[]; // El array de tareas que se pasa como prop
+    tareas: Tarea[];
+    
   }
   const entrante = {
     hidden:{

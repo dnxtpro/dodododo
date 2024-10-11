@@ -132,27 +132,26 @@ const Calendar = ({ events, onDateSelect }: CalendarProps) => {
                             x: { type: "spring", stiffness: 500, damping: 25 },
                             opacity: { duration: 0.5 },
                         }}
-                        className="grid grid-cols-7 absolute inset-0 border rounded-md  shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)] "
+                        className="grid mt-2 grid-cols-7 gap-1 absolute inset-0 rounded-md"
                     >
                         {diasSemana.map((day) => {
-                            return <div className="font-bold text-center border rounded-md " key={day}>{day}</div>
+                            return <div className="font-extrabold text-center rounded-full " key={day}>{day}</div>
                         })}
                         {Array.from({ length: diaInicialIndex }).map((_, index) => {
-                            return <div className=" text-center border rounded-md p-2 " key={`empty-${index}`}>{ }</div>
+                            return <div className=" text-center p-2 " key={`empty-${index}`}>{ }</div>
                         })}
                         {diasMes.map((day, index) => {
-                            return <div className={clsx(" text-center border rounded-md p-2 hover:bg-slate-300 cursor-pointer", {
-                                "bg-slate-700 text-white font-bold border-accent  hover:bg-slate-500": isToday(day),
+                            return <div className={clsx(" text-center rounded-full p-2 hover:bg-slate-300 cursor-pointer transition-colors", {
+                                "bg-slate-700 text-white font-bold border-accent hover:bg-slate-500": isToday(day),
                                 "bg-blue-300 text-white": isSelectedDay(day),
-                                "bg-blue-500 text-white": isStartDate(day),
-                                "bg-blue-600 text-white": isEndDate(day),
+                                "bg-blue-500 text-white": isStartDate(day) || isEndDate(day),
                                 "bg-slate-400": isInRange(day),
 
                             })} key={index} onClick={() => handleDayClick(day)}>
                                 {format(day, "d")}
                                 {events
                                     .filter((event) => isSameDay(event.date, day)).map((event) => {
-                                        return <div key={event.title}>{event.title}</div>
+                                        return <div key={event.title}></div>
                                     })}
 
                             </div>
