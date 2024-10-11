@@ -1,30 +1,31 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import clsx from "clsx";
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, subMonths, addMonths, isToday, isSameDay,isWithinInterval  } from "date-fns"
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, subMonths, addMonths, isToday, isSameDay, isWithinInterval } from "date-fns"
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import EventModal from "./ModalEvent";
 
 interface CalendarEvent {
     date: Date;
-    description:string;
+    description: string;
     title: string;
 }
 interface CalendarProps {
     events: CalendarEvent[];
-    onDateSelect:(startDate: Date, endDate?: Date) => void; 
+    onDateSelect: (startDate: Date, endDate?: Date) => void;
 
 }
 
 
-const Calendar = ({ events,onDateSelect }: CalendarProps) => {   
+const Calendar = ({ events, onDateSelect }: CalendarProps) => {
 
     const [currentDate, setCurrentDate] = useState(new Date());
     const [startDate, setStartDate] = useState<Date | null>(null); // Fecha de inicio del rango
     const [endDate, setEndDate] = useState<Date | null>(null);     // Fecha de fin del rango
     const [isSelectingRange, setIsSelectingRange] = useState(false); // Cont
- const [isSelecting, setIsSelecting] = useState(false);
+
 
 
     const diasSemana = ["Lun", "Mar", "Mier", "Jue", "Vie", "Sab", "Dom"];
@@ -68,24 +69,8 @@ const Calendar = ({ events,onDateSelect }: CalendarProps) => {
         }
         setPage([page + newDirection, newDirection])
     }
-    const handleMouseDown = (date: Date) => {
-        setIsSelecting(true);
-        setStartDate(date);
-        setEndDate(date);
-      };
-      const handleMouseOver = (date: Date) => {
-        if (isSelecting) {
-          setEndDate(date);
-        }
-      };
-    
-      const handleMouseUp = () => {
-        setIsSelecting(false);
-        if (startDate && endDate) {
-          onDateSelect(startDate, endDate);
-        }
-      };
-    const handleDayClick = (date:Date) => {
+
+    const handleDayClick = (date: Date) => {
         if (!startDate || endDate) {
             // Si no hay fecha de inicio o ya hay un rango seleccionado, reiniciar la selección
             setStartDate(date);
@@ -97,15 +82,27 @@ const Calendar = ({ events,onDateSelect }: CalendarProps) => {
             setIsSelectingRange(false);
             onDateSelect(startDate, date); // Pasar el rango de fechas seleccionado
         }
-      };
-      const isSelectedDay = (day: Date) => {
+    };
+    const isStartDate = (day: Date) => {
+        return startDate && isSameDay(day, startDate);
+    };
+
+    const isEndDate = (day: Date) => {
+        return endDate && isSameDay(day, endDate);
+    };
+
+    const isInRange = (day: Date) => {
+        if (!startDate || !endDate) return false;
+        return day > startDate && day < endDate;
+    };
+    const isSelectedDay = (day: Date) => {
         if (!startDate) return false;
         if (endDate) {
             return isWithinInterval(day, { start: startDate, end: endDate });
         }
         return isSameDay(day, startDate);
     };
-   
+
     return (
         <div className="col-start-4 col-span-2">
             <Card className="">
@@ -147,30 +144,29 @@ const Calendar = ({ events,onDateSelect }: CalendarProps) => {
                         {diasMes.map((day, index) => {
                             return <div className={clsx(" text-center border rounded-md p-2 hover:bg-slate-300 cursor-pointer", {
                                 "bg-slate-700 text-white font-bold border-accent  hover:bg-slate-500": isToday(day),
-                                "bg-blue-500 text-white": isSelectedDay(day)
+                                "bg-blue-300 text-white": isSelectedDay(day),
+                                "bg-blue-500 text-white": isStartDate(day),
+                                "bg-blue-600 text-white": isEndDate(day),
+                                "bg-slate-400": isInRange(day),
 
-                            })} key={index}
-                            onMouseDown={() => handleMouseDown(day)}
-                            onMouseOver={() => handleMouseOver(day)}
-                            onMouseUp={handleMouseUp}
-                             onClick={() => handleDayClick(day)}>
+                            })} key={index} onClick={() => handleDayClick(day)}>
                                 {format(day, "d")}
                                 {events
                                     .filter((event) => isSameDay(event.date, day)).map((event) => {
                                         return <div key={event.title}>{event.title}</div>
                                     })}
-                                  
+
                             </div>
                         })}
-                         
-        
+
+
                     </motion.div>
-                    
+
                 </AnimatePresence>
 
             </div>
-            </div>
-           
+        </div>
+
     )
 }
 export default Calendar;
