@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer base {
+  
+  :root {
+    --background: 210 20% 95%; /* #F5F7FA (Light Grey) */
+    --foreground: 210 20% 10%; /* #2C3E50 (Dark Blue) */
+    --card: 210 20% 90%; /* #D1D8E0 (Grey) */
+    --card-foreground: 210 20% 15%; /* Ajustado para contraste */
+    --popover: 210 20% 95%; /* #F5F7FA (Light Grey) */
+    --popover-foreground: 210 20% 10%; /* #2C3E50 (Dark Blue) */
+    --primary: 210 75% 60%; /* #4A90E2 (Principal Color) */
+    --primary-foreground: 0 0% 100%; /* Blanco para el foreground */
+    --secondary: 210 10% 70%; /* Ajustado para una segunda opción de color */
+    --secondary-foreground: 210 10% 15%; /* Oscuro para buen contraste */
+    --muted: 210 20% 85%; /* Ligero ajuste en saturación */
+    --muted-foreground: 210 20% 25%; /* Ajustado para contraste */
+    --accent: 210 75% 60%; /* #4A90E2 (Principal Color) */
+    --accent-foreground: 0 0% 100%; /* Blanco para el foreground */
+    --destructive: 0 100% 30%; /* Rojo visible */
+    --destructive-foreground: 0 0% 100%; /* Blanco para foreground */
+    --border: 210 10% 80%; /* Suave para bordes */
+    --input: 210 10% 20%; /* Suave para inputs */
+    --ring: 210 75% 60%; /* #4A90E2 (Principal Color) */
+    --radius: 0.5rem;
+  }
+    
+.dark  {
+  --background: 212 50% 5%;
+  --foreground: 212 5% 90%;
+  --card: 212 50% 0%;
+  --card-foreground: 212 5% 90%;
+  --popover: 212 50% 5%;
+  --popover-foreground: 212 5% 90%;
+  --primary: 212 72.4% 58.8%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 212 30% 10%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 174 30% 15%;
+  --muted-foreground: 212 5% 60%;
+  --accent: 174 30% 15%;
+  --accent-foreground: 212 5% 90%;
+  --destructive: 0 100% 30%;
+  --destructive-foreground: 212 5% 90%;
+  --border: 212 30% 18%;
+  --input: 212 30% 18%;
+  --ring: 212 72.4% 58.8%;
+  --radius: 0.5rem;
+}
+
+}
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
