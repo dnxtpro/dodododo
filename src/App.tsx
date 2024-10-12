@@ -15,6 +15,7 @@ function App() {
   
   const [startDate, setStartDate] = useState<Date | null>(null); // Fecha de inicio del rango
   const [endDate, setEndDate] = useState<Date | null>(null);  
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   const tareasData = [
     {
@@ -77,20 +78,16 @@ function App() {
   ];
 
 // Manejador para cambiar la fecha seleccionada desde el calendario
-const filteredTareas = startDate
-? tareasData.filter((tarea) => {
-    const tareaFecha = new Date(tarea.Fecha);
-    return endDate ? (tareaFecha >= startDate && tareaFecha <= endDate) : tareaFecha >= startDate;
-  })
-: tareasData;
-// Manejador para cambiar la fecha seleccionada desde el calendario
-const handleDateSelect = (startDate: Date, endDate?: Date) => {
-  setStartDate(startDate);
-  if (endDate) {
-    setEndDate(endDate);
-  } else {
-    setEndDate(startDate); // Para manejar un solo día
-  }
+const filteredTareas = selectedDate
+
+    ? tareasData.filter((tarea) => tarea.Fecha === selectedDate)
+    : tareasData;
+
+const handleDateSelect = (startDate: Date) => {
+
+  const selectedFormattedDate = startDate.toISOString().split('T')[0]; // Formatea la fecha como 'YYYY-MM-DD'
+  setSelectedDate(selectedFormattedDate);
+  console.log(selectedDate)
 };
   return (
     <>
@@ -103,14 +100,15 @@ const handleDateSelect = (startDate: Date, endDate?: Date) => {
             <Route path="/profile" element={<Profile />} />
           </Routes>
         </div>
-       <div className="grid grid-cols-6 mx-4 my-4 md:space-x-4">
-       <Tareas tareas={filteredTareas}/>
-       <Calendar   events={[{date:subDays(new Date(),6),title:"sexo matutino",description:"sexo deverdad"}]} onDateSelect={handleDateSelect}         />
-        
-        
-        
-       
-       </div>
+        <div className={`grid mx-4 my-4 md:space-x-4 ${filteredTareas.length === 0 ? 'grid-cols-4 mx-8' : 'grid-cols-6'}`}>
+          {filteredTareas.length > 0 && (
+          
+            <Tareas tareas={filteredTareas} />
+          )}
+          <div className={`${filteredTareas.length === 0 ? 'col-span-full' : 'col-span-4 col-start-3'}`}>
+            <Calendar events={[{date:subDays(new Date(),6),title:"sexo matutino",description:"sexo deverdad"}]} onDateSelect={handleDateSelect} />
+          </div>
+        </div>
      
         
         

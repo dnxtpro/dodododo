@@ -13,7 +13,7 @@ interface CalendarEvent {
 }
 interface CalendarProps {
     events: CalendarEvent[];
-    onDateSelect: (startDate: Date, endDate?: Date) => void;
+    onDateSelect: (startDate: Date) => void;
 
 }
 
@@ -22,9 +22,7 @@ const Calendar = ({ events, onDateSelect }: CalendarProps) => {
 
     const [currentDate, setCurrentDate] = useState(new Date());
     const [startDate, setStartDate] = useState<Date | null>(null); // Fecha de inicio del rango
-    const [endDate, setEndDate] = useState<Date | null>(null);     // Fecha de fin del rango
-    const [isSelectingRange, setIsSelectingRange] = useState(false); // Cont
-
+    
 
 
     const diasSemana = ["Lun", "Mar", "Mier", "Jue", "Vie", "Sab", "Dom"];
@@ -70,40 +68,20 @@ const Calendar = ({ events, onDateSelect }: CalendarProps) => {
     }
 
     const handleDayClick = (date: Date) => {
-        if (!startDate || endDate) {
-            // Si no hay fecha de inicio o ya hay un rango seleccionado, reiniciar la selección
-            setStartDate(date);
-            setEndDate(null);
-            setIsSelectingRange(true);
-        } else if (isSelectingRange) {
-            // Si estamos en modo de selección de rango, establecer la fecha final
-            setEndDate(date);
-            setIsSelectingRange(false);
-            onDateSelect(startDate, date); // Pasar el rango de fechas seleccionado
-        }
+        console.log(date)
+       if(date){
+        onDateSelect(date); 
+       }
     };
-    const isStartDate = (day: Date) => {
-        return startDate && isSameDay(day, startDate);
-    };
-
-    const isEndDate = (day: Date) => {
-        return endDate && isSameDay(day, endDate);
-    };
-
-    const isInRange = (day: Date) => {
-        if (!startDate || !endDate) return false;
-        return day > startDate && day < endDate;
-    };
+   
     const isSelectedDay = (day: Date) => {
         if (!startDate) return false;
-        if (endDate) {
-            return isWithinInterval(day, { start: startDate, end: endDate });
-        }
+        
         return isSameDay(day, startDate);
     };
 
     return (
-        <div className="col-start-4 col-span-2">
+        <div>
             <Card className="">
                 <CardHeader >
 
@@ -119,7 +97,7 @@ const Calendar = ({ events, onDateSelect }: CalendarProps) => {
 
                 </CardHeader>
             </Card>
-            <div className="relative" >
+            <div className="relative " >
                 <AnimatePresence custom={direction}>
                     <motion.div
                         key={page}
@@ -135,17 +113,16 @@ const Calendar = ({ events, onDateSelect }: CalendarProps) => {
                         className="grid mt-2 grid-cols-7 gap-1 absolute inset-0 rounded-md"
                     >
                         {diasSemana.map((day) => {
-                            return <div className="font-extrabold text-center rounded-full " key={day}>{day}</div>
+                            return <div className="font-extrabold text-center rounded-sm p-0 " key={day}>{day}</div>
                         })}
                         {Array.from({ length: diaInicialIndex }).map((_, index) => {
                             return <div className=" text-center p-2 " key={`empty-${index}`}>{ }</div>
                         })}
                         {diasMes.map((day, index) => {
-                            return <div className={clsx(" text-center rounded-full p-2 hover:bg-slate-300 cursor-pointer transition-colors", {
+                            return <div className={clsx(" h-[10vh] text-center flex items-start justify-center rounded-full p-3 hover:bg-slate-300 cursor-pointer transition-colors", {
                                 "bg-slate-700 text-white font-bold border-accent hover:bg-slate-500": isToday(day),
                                 "bg-blue-300 text-white": isSelectedDay(day),
-                                "bg-blue-500 text-white": isStartDate(day) || isEndDate(day),
-                                "bg-slate-400": isInRange(day),
+                              
 
                             })} key={index} onClick={() => handleDayClick(day)}>
                                 {format(day, "d")}
