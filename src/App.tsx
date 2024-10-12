@@ -13,8 +13,7 @@ import {Routes,Route} from "react-router-dom"
 
 function App() {
   
-  const [startDate, setStartDate] = useState<Date | null>(null); // Fecha de inicio del rango
-  const [endDate, setEndDate] = useState<Date | null>(null);  
+   
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   const tareasData = [

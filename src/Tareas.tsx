@@ -3,7 +3,7 @@ import { Badge } from "./components/ui/badge";
 import { motion } from "framer-motion";
 import Timer from "./Timer";
 import { CalendarIcon } from "lucide-react";
-import clsx from "clsx";
+
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "./lib/utils";
 interface Tarea {

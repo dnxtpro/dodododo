@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import clsx from "clsx";
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, subMonths, addMonths, isToday, isSameDay, isWithinInterval } from "date-fns"
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, subMonths, addMonths, isToday, isSameDay } from "date-fns"
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -21,7 +21,7 @@ interface CalendarProps {
 const Calendar = ({ events, onDateSelect }: CalendarProps) => {
 
     const [currentDate, setCurrentDate] = useState(new Date());
-    const [startDate, setStartDate] = useState<Date | null>(null); // Fecha de inicio del rango
+    const [startDate] = useState<Date | null>(null); // Fecha de inicio del rango
     
 
 
