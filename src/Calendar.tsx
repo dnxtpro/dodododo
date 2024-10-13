@@ -22,7 +22,7 @@ const Calendar = ({ events, onDateSelect }: CalendarProps) => {
 
     const [currentDate, setCurrentDate] = useState(new Date());
     const [startDate] = useState<Date | null>(null); // Fecha de inicio del rango
-    
+
 
 
     const diasSemana = ["Lun", "Mar", "Mier", "Jue", "Vie", "Sab", "Dom"];
@@ -69,14 +69,14 @@ const Calendar = ({ events, onDateSelect }: CalendarProps) => {
 
     const handleDayClick = (date: Date) => {
         console.log(date)
-       if(date){
-        onDateSelect(date); 
-       }
+        if (date) {
+            onDateSelect(date);
+        }
     };
-   
+
     const isSelectedDay = (day: Date) => {
         if (!startDate) return false;
-        
+
         return isSameDay(day, startDate);
     };
 
@@ -89,7 +89,11 @@ const Calendar = ({ events, onDateSelect }: CalendarProps) => {
                         <Button variant="outline" size="icon" onClick={() => paginate(-1)}>
                             <ChevronLeft className="h-4 w-4" />
                         </Button>
-                        <CardTitle>                <h2 className="text-center">{format(currentDate, "MMMM yyyy")}</h2> </CardTitle>
+                        <CardTitle>
+                            <h2 className="text-center">
+                                {format(currentDate, "MMMM yyyy")}
+                            </h2>
+                        </CardTitle>
                         <Button variant="outline" size="icon" onClick={() => paginate(1)}>
                             <ChevronRight className="h-4 w-4" />
                         </Button>
@@ -119,10 +123,10 @@ const Calendar = ({ events, onDateSelect }: CalendarProps) => {
                             return <div className=" text-center p-2 " key={`empty-${index}`}>{ }</div>
                         })}
                         {diasMes.map((day, index) => {
-                            return <div className={clsx(" h-[10vh] text-center flex items-start justify-center rounded-full p-3 hover:bg-slate-300 cursor-pointer transition-colors", {
+                            return <div className={clsx(" h-[5vh] text-center flex items-center justify-center rounded-full p-1 hover:bg-slate-300 cursor-pointer transition-colors", {
                                 "bg-slate-700 text-white font-bold border-accent hover:bg-slate-500": isToday(day),
                                 "bg-blue-300 text-white": isSelectedDay(day),
-                              
+
 
                             })} key={index} onClick={() => handleDayClick(day)}>
                                 {format(day, "d")}
