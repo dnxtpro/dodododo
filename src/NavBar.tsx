@@ -35,7 +35,7 @@ export default function Navbar() {
               <a href="/register">REGISTER</a>
             </Button>
             <Button variant="ghost" asChild>
-              <a href="/logout">LOGOUT</a>
+              <a href="/task">TAREAS</a>
             </Button>
           </div>
         </div>

@@ -1,7 +1,6 @@
 import { Card, CardHeader, CardTitle } from "./components/ui/card";
 import { Badge } from "./components/ui/badge";
 import { motion } from "framer-motion";
-import Timer from "./Timer";
 import { CalendarIcon } from "lucide-react";
 import { useState } from "react";
 import { cn } from "./lib/utils";
@@ -48,7 +47,7 @@ const Tareas = ({ tareas }: TareasProps) => {
         const draggedIndex = parseInt(e.dataTransfer.getData("taskIndex"));
         if (draggedIndex !== index) {
             setDraggingIndex(index);
-        }
+        }   
     };
 
     const handleDrop = (e: React.DragEvent<HTMLDivElement>,index:number) => {
@@ -62,11 +61,11 @@ const Tareas = ({ tareas }: TareasProps) => {
     };
 
     return (
-        <div className="col-span-2">
+        <div className="">
             <Card>
                 <CardHeader>
                     <CardTitle>Tareas</CardTitle>
-                    <Timer/>
+                   
                 </CardHeader>
             </Card>
             <div className="h-[60vh] pr-4">

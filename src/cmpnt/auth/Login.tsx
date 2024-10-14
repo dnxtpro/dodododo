@@ -20,7 +20,7 @@ const Login = () => {
   useEffect(() => {
     const currentUser = AuthService.getCurrentUser();
     if (currentUser) {
-      setRedirect("/profile");
+    
     }
   }, []);
 
