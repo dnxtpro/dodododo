@@ -4,8 +4,10 @@ import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import AuthService from "../../services/auth.service";
 import { Button } from "@/components/ui/button";
+import {useNavigate } from "react-router-dom";
 
 const Register = () => {
+  const navigate = useNavigate(); 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,11 +17,11 @@ const Register = () => {
 
   const validateForm = () => {
     if (!username || username.length < 3 || username.length > 20) {
-      setMessage("Username must be between 3 and 20 characters.");
+      setMessage("El Usuario debe tener por lo menos 3 caracteres y menos de 20");
       return false;
     }
     if (!email) {
-      setMessage("Email is required.");
+      setMessage("Correo Obligatorio");
       return false;
     }
     if (!password || password.length < 6 || password.length > 40) {
@@ -40,6 +42,7 @@ const Register = () => {
 
     setMessage("");
     setSuccessful(false);
+    navigate("/Login");
 
     try {
       const response = await AuthService.register(username, email, password);
@@ -47,7 +50,7 @@ const Register = () => {
       setSuccessful(true);
     }catch (error: unknown) {
         // Type guard for error handling
-        let resMessage = "An error occurred.";
+        let resMessage = "Ha ocurrido un error";
   
         if (error instanceof Error) {
           resMessage = error.message; // Get the error message if it's an instance of Error
@@ -56,7 +59,7 @@ const Register = () => {
           const errResponse = (error as any).response; // Cast to any to access properties
           resMessage =
             (errResponse && errResponse.data && errResponse.data.message) ||
-            "An unexpected error occurred.";
+            "Error inexplicable";
         }
       setMessage(resMessage);
       setSuccessful(false);

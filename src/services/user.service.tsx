@@ -18,6 +18,9 @@ class UserService {
   getCategory(){
     return axios.get(API_URL +"category/get",{headers: authHeader()})
   }
+  deleteCategory(id:number){
+    return axios.delete(API_URL +"category/delete/"+id,{headers: authHeader()})
+  }
 
   getModeratorBoard() {
     return axios.get(API_URL + 'test/mod', { headers: authHeader() });

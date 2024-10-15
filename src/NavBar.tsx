@@ -5,8 +5,10 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu"
+import { Link } from "react-router-dom"
 
 export default function Navbar() {
+  
   return (
     <header className="border-b">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -17,7 +19,7 @@ export default function Navbar() {
               <NavigationMenuItem>
                 <NavigationMenuLink
                   href="/"
-                  className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
+                  className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-primary focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
                 >
                   HOME
                 </NavigationMenuLink>
@@ -26,15 +28,21 @@ export default function Navbar() {
             </NavigationMenuList>
           </NavigationMenu>
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" asChild>
-              <a href="/login">LOGIN</a>
+            <Link to={"/login"}>
+            <Button variant="ghost" asChild className="hover:text-primary hover:bg-muted hover:font-bold">
+            <span>LOGIN</span>
+          </Button></Link>
+          <Link to={"/register"}>
+          <Button variant="ghost" asChild className="hover:text-primary hover:bg-muted hover:font-bold">
+            <span>REGISTER</span> 
+            </Button></Link>
+            <Link to={"/task"}>
+            
+            <Button variant="ghost" asChild className="hover:text-primary hover:bg-muted hover:font-bold">
+            <span>TAREAS</span>
             </Button>
-            <Button variant="ghost" asChild>
-              <a href="/register">REGISTER</a>
-            </Button>
-            <Button variant="ghost" asChild>
-              <a href="/task">TAREAS</a>
-            </Button>
+            </Link>
+       
           </div>
         </div>
       </div>
