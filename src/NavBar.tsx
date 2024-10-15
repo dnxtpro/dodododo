@@ -22,9 +22,7 @@ export default function Navbar() {
                   HOME
                 </NavigationMenuLink>
               </NavigationMenuItem>
-              <NavigationMenuItem>
-              <img src="./lol.gif" alt="" />
-              </NavigationMenuItem>
+             
             </NavigationMenuList>
           </NavigationMenu>
           <div className="flex items-center space-x-4">

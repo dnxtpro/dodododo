@@ -64,7 +64,8 @@ const Register = () => {
   };
 
   return (
-    <Card className="w-[350px] p-5">
+    <Card className="w-[350px] mx-auto p-5 mt-10">
+      <div className="absolute -left-1 bot-1/2"><img src="path1-9.png" alt="" /></div>
       <CardHeader>
         <CardTitle>Sign Up</CardTitle>
         <CardDescription>Enter your credentials to create an account.</CardDescription>

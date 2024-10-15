@@ -11,6 +11,7 @@ import { Button } from './components/ui/button'
 import AuthService from "./services/user.service";
 import {Routes,Route} from "react-router-dom";
 import Tasks from './Tasks'
+import Hero from './Hero'
 
 
 function App() {
@@ -20,10 +21,7 @@ function App() {
 
  
 
-  const enviar = ()=>{
-    AuthService.addCategory("hola", "sexo");
-  }
-// Manejador para cambiar la fecha seleccionada desde el calendario
+
 
 const handleDateSelect = (startDate: Date) => {
 
@@ -35,12 +33,13 @@ const handleDateSelect = (startDate: Date) => {
     <>
       <div className="w-full flex flex-col">
         <Navbar />
-        <Button onClick={enviar} ></Button>
+       
         <div className="">
         <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/" element={<Hero />} />
             <Route path="/task" element={<Tasks />} />
             <Route path="/calendar" element={<Calendar events={[{date:subDays(new Date(),6),title:"sexo matutino",description:"sexo deverdad"}]} onDateSelect={handleDateSelect} />} />
 

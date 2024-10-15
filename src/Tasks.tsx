@@ -114,21 +114,23 @@ const Tasks = () => {
       };
     
     return(
-        <div className="grid grid-cols-2 space-x-10 mx-10">
+        <div className="grid grid-cols-2 space-x-10 mx-10 mt-4">
         <Tareas tareas={tareasData}/>
         <div className="flex flex-col mx-10 space-y-4 ">
+          <div className="grid grid-cols-4 gap-4">
         {categories.map((cat) => (
-          <div 
+          <Card
             key={cat.name} 
-            className="py-4 border-2 shadow-md border-r-8 rounded col-start-2 text-center" 
-            style={{ borderColor: cat.color }}
+            className="text-center" 
+            style={{boxShadow:" 0 1px 3px 0" + cat.color + "," + "0 1px 2px -1px"+cat.color }}
           >
             <h3 className="font-bold">{cat.name}</h3>
-          </div>
+          </Card>
         ))}
-          <form onSubmit={handleAddCategory} className="mt-6 p-4 border-2 border-r-8 rounded" style={{ borderColor: newCategory.color }}>
-          <h3 className="font-bold mb-4">Añadir Nueva Categoría</h3>
-          <Card className="space-y-4 flex flex-col items-center">
+        </div>
+          <form onSubmit={handleAddCategory} >
+          
+          <Card style={{boxShadow:" 0 1px 3px 0 " + newCategory.color + "," + "0 1px 2px -1px"+newCategory.color}} className="space-y-4 flex flex-col items-center">
             <div>
               <Label htmlFor="categoryName">Nombre de la Categoría</Label>
               <Input

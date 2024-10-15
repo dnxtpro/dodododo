@@ -3,53 +3,52 @@
 @tailwind utilities;
 @layer base {
   
-  :root {
-    --background: 210 20% 95%; /* #F5F7FA (Light Grey) */
-    --foreground: 210 20% 10%; /* #2C3E50 (Dark Blue) */
-    --card: 210 20% 90%; /* #D1D8E0 (Grey) */
-    --card-foreground: 210 20% 15%; /* Ajustado para contraste */
-    --popover: 210 20% 95%; /* #F5F7FA (Light Grey) */
-    --popover-foreground: 210 20% 10%; /* #2C3E50 (Dark Blue) */
-    --primary: 215.29, 40%, 33.33%; /* #4A90E2 (Principal Color) */
-    --primary-foreground: 0 0% 100%; /* Blanco para el foreground */
-    --secondary: 210 10% 70%; /* Ajustado para una segunda opción de color */
-    --secondary-foreground: 210 10% 15%; /* Oscuro para buen contraste */
-    --muted: 210 20% 85%; /* Ligero ajuste en saturación */
-    --muted-foreground: 210 20% 25%; /* Ajustado para contraste */
-    --accent:215.29, 40%, 33.33%; /* #4A90E2 (Principal Color) */
-    --accent-foreground: 0 0% 100%; /* Blanco para el foreground */
-    --destructive: 0 100% 30%; /* Rojo visible */
-    --destructive-foreground: 0 0% 100%; /* Blanco para foreground */
-    --border: 210 10% 80%; /* Suave para bordes */
-    --input: 210 10% 20%; /* Suave para inputs */
-    --ring: 210 75% 60%; /* #4A90E2 (Principal Color) */
-    --radius: 0.5rem;
-  }
-    
-.dark  {
-  --background: 212 50% 5%;
-  --foreground: 212 5% 90%;
-  --card: 212 50% 0%;
-  --card-foreground: 212 5% 90%;
-  --popover: 212 50% 5%;
-  --popover-foreground: 212 5% 90%;
-  --primary: 212 72.4% 58.8%;
-  --primary-foreground: 0 0% 100%;
-  --secondary: 212 30% 10%;
-  --secondary-foreground: 0 0% 100%;
-  --muted: 174 30% 15%;
-  --muted-foreground: 212 5% 60%;
-  --accent: 174 30% 15%;
-  --accent-foreground: 212 5% 90%;
-  --destructive: 0 100% 30%;
-  --destructive-foreground: 212 5% 90%;
-  --border: 212 30% 18%;
-  --input: 212 30% 18%;
-  --ring: 212 72.4% 58.8%;
+ :root {
+  --background: 40 60% 94%; /* #F7EED6 (BG-100) */
+  --foreground: 200 20% 15%; /* #2A363B (Text-100) */
+  --card: 40 60% 90%; /* #ede4cc (BG-200) */
+  --card-foreground: 200 20% 20%; /* #536065 (Text-200) */
+  --popover: 40 60% 94%; /* #F7EED6 (BG-100) */
+  --popover-foreground: 200 20% 15%; /* #2A363B (Text-100) */
+  --primary: 0 75% 60%; /* #FF6B6B (Primary-100) */
+  --primary-foreground: 0 0% 100%; /* White */
+  --secondary: 48 100% 70%; /* #FFD166 (Accent-100) */
+  --secondary-foreground: 48 100% 30%; /* #957200 (Accent-200) */
+  --muted: 40 60% 85%; /* #c4bca5 (BG-300) */
+  --muted-foreground: 200 20% 25%; /* Adjusted for contrast */
+  --accent: 48 100% 70%; /* #FFD166 (Accent-100) */
+  --accent-foreground: 0 0% 100%; /* White */
+  --destructive: 0 100% 30%; /* #dd4d51 (Primary-200) */
+  --destructive-foreground: 0 0% 100%; /* White */
+  --border: 40 60% 80%; /* Soft for borders */
+  --input: 40 60% 20%; /* Input color */
+  --ring: 0 75% 60%; /* #FF6B6B (Primary-100) */
   --radius: 0.5rem;
 }
 
+.dark {
+  --background: 0 75% 10%; /* Adjusted for dark mode */
+  --foreground: 200 5% 90%; /* #E0E0E0 */
+  --card: 0 75% 5%; /* Dark background */
+  --card-foreground: 0 0% 100%; /* Light foreground */
+  --popover: 0 75% 10%; /* Popover dark */
+  --popover-foreground: 200 5% 90%; /* Light text */
+  --primary: 0 75% 60%; /* #FF6B6B (Primary-100) */
+  --primary-foreground: 0 0% 100%; /* White */
+  --secondary: 48 100% 30%; /* #957200 (Accent-200) */
+  --secondary-foreground: 0 0% 100%; /* White */
+  --muted: 40 60% 25%; /* Dark muted */
+  --muted-foreground: 200 20% 25%; /* Light muted foreground */
+  --accent: 48 100% 30%; /* #957200 (Accent-200) */
+  --accent-foreground: 0 0% 100%; /* White */
+  --destructive: 0 100% 30%; /* #dd4d51 (Primary-200) */
+  --destructive-foreground: 0 0% 100%; /* White */
+  --border: 40 60% 20%; /* Border color for dark mode */
+  --input: 40 60% 20%; /* Input dark */
+  --ring: 0 75% 60%; /* #FF6B6B (Primary-100) */
+  --radius: 0.5rem;
 }
+
 @layer base {
   * {
     @apply border-border;
@@ -57,4 +56,5 @@
   body {
     @apply bg-background text-foreground;
   }
+}
 }

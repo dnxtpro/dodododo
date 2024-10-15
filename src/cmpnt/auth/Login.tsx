@@ -58,7 +58,8 @@ const Login = () => {
   };
 
   return (
-    <Card className="w-[350px]">
+    <Card className="w-[350px] mx-auto mt-10">
+      <div className="absolute left-0 top-1/2"><img src="path1-0.png" alt="" /></div>
       <CardHeader>
         <CardTitle>Login</CardTitle>
         <CardDescription>Enter your credentials to access your account.</CardDescription>
