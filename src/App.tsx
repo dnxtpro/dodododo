@@ -6,9 +6,7 @@ import Navbar from "./NavBar"
 import Calendar from "./Calendar"
 import { subDays } from "date-fns"
 import { useState } from 'react'
-import { Button } from './components/ui/button'
 
-import AuthService from "./services/user.service";
 import {Routes,Route} from "react-router-dom";
 import Tasks from './Tasks'
 import Hero from './Hero'

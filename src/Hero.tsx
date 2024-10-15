@@ -1,14 +1,10 @@
 
-import { motion } from "framer-motion";
 import { Button } from "./components/ui/button";
 import {ChevronRight} from "lucide-react"
 
 const Hero = () => {
  
 
-    const divs = Array.from({ length: 15 }, (_, index) => (
-      <div key={index} className="h-10 bg-yellow-400 border-2 rounded"></div>
-    ));
 
 
   return (
