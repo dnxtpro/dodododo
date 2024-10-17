@@ -42,6 +42,12 @@ export default function Navbar() {
             <span>TAREAS</span>
             </Button>
             </Link>
+            <Link to={"/tabla"}>
+            
+            <Button variant="ghost" asChild className="hover:text-primary hover:bg-muted hover:font-bold">
+            <span>CALENDARIO SEMANAL</span>
+            </Button>
+            </Link>
        
           </div>
         </div>

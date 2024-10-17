@@ -104,6 +104,11 @@ const TablaDia = () => {
             start: new Date(2024, 9, 17, 20, 0),
             end: new Date(2024, 9, 17, 20, 30),
         },
+        {
+            title: "Evento 3",
+            start: new Date(2024, 9, 17, 3, 20),
+            end: new Date(2024, 9, 17, 12, 30),
+        },
     ];
 
     return (
