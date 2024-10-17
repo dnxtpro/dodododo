@@ -4,12 +4,15 @@ import authHeader from './auth-header';
 const API_URL = 'https://todo-bkend.onrender.com/api/';
 
 interface Tarea {
-    Titulo: string;
-    Descripcion: string;
-    Categoria: Category;
-    Prioridad: string;
-    Fecha: string;
-    Hecho:boolean;
+  Titulo: string;
+  Descripcion: string;
+  Categoria: Category;
+  Prioridad: string;
+  Fecha_Inicio: Date;
+  Hecho: boolean;
+  FullDay: boolean;
+  Fecha_Fin: Date;
+
 }
 interface Category {
 

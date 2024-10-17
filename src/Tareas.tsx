@@ -13,14 +13,20 @@ import { format } from 'date-fns'
 import { Textarea } from "./components/ui/textarea";
 import eventService from "./services/event.service";
 import toast from "react-hot-toast";
+import { Switch } from "./components/ui/switch"
+import { Label } from "./components/ui/label"
 
 interface Tarea {
     Titulo: string;
     Descripcion: string;
     Categoria: Category;
     Prioridad: string;
-    Fecha: string;
-    Hecho:boolean;
+    Fecha_Inicio: Date;
+    Hecho: boolean;
+    FullDay: boolean;
+    Fecha_Fin: Date;
+
+
 }
 type Priority = 'low' | 'medium' | 'high'
 
@@ -39,41 +45,51 @@ const Tareas = ({ tareas }: TareasProps) => {
     const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
     const [categories, setCategories] = useState<Category[]>([]);
     const [isFormExpanded, setIsFormExpanded] = useState(false);
+    const [isAllDay, setIsAllDay] = useState(false);
     const [newTask, setNewTask] = useState<Tarea>({
         Titulo: "",
         Descripcion: "",
         Categoria: { id: 0, name: "", color: "" },
         Prioridad: "media",
-        Fecha: format(new Date(), 'dd-MM-yyyy'),
-        Hecho:true
+        Fecha_Inicio: new Date(),
+        Fecha_Fin: new Date(),
+        FullDay: true,
+        Hecho: false
     });
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
         const updatedTasks = [...listaTareas, newTask];
 
-        setListaTareas(updatedTasks); 
+        setListaTareas(updatedTasks);
         enviar(newTask);
         setNewTask({
             Titulo: "",
             Descripcion: "",
-            Categoria:{ id: 0, name: "", color: "" },
+            Categoria: { id: 0, name: "", color: "" },
             Prioridad: "media",
-            Fecha: format(new Date(), 'dd-MM-yyyy'),
-            Hecho:true,
+            Fecha_Inicio: new Date(),
+            Fecha_Fin: new Date(),
+            FullDay: true,
+            Hecho: false
         }); // Actualiza el estado con la nueva lista de tareas
         setIsFormExpanded(false); // Cierra el formulario
     };
-    const enviar = async (tarea:Tarea) => {
+    const handleCheckboxChange = (index: number) => {
+        const newTasks = [...listaTareas];
+        newTasks[index].Hecho = !newTasks[index].Hecho;
+        setListaTareas(newTasks);
+    };
+    const enviar = async (tarea: Tarea) => {
         const response = await eventService.addEvent(tarea);
         if (response) {
-          console.log(response.data)
-          toast.success("Categoria" + response.data.name + ",creada correctamente")
-          recibirEvento();
+            console.log(response.data)
+            toast.success("Categoria" + response.data.name + ",creada correctamente")
+            recibirEvento();
         }
         else toast.error("Algo ha ido mal")
-    
-      }
+
+    }
     const recibir = async () => {
         try {
             const response = await AuthService.getCategory();
@@ -92,11 +108,16 @@ const Tareas = ({ tareas }: TareasProps) => {
     const recibirEvento = async () => {
         try {
             tareas = await eventService.getTasks();
+            tareas = tareas.map(tarea => ({
+                ...tarea,
+                Fecha_Inicio: new Date(tarea.Fecha_Inicio),
+                Fecha_Fin: new Date(tarea.Fecha_Fin)
+            }));
             setListaTareas(tareas)
             console.log('Tareas obtenidas:', tareas);
-          } catch (error) {
+        } catch (error) {
             console.error('Error al obtener las tareas:', error);
-          }
+        }
     };
     const dayPickerRef = useRef<HTMLDivElement | null>(null);
     useEffect(() => {
@@ -158,13 +179,18 @@ const Tareas = ({ tareas }: TareasProps) => {
             </Card>
             <motion.div
                 initial={false}
+                animate={{ height: isFormExpanded ? '100vh' : 'auto', width: isFormExpanded ? '100vw' : 'auto' }}
+                transition={{ duration: 0.3 }}
+                className="fixed z-40 backdrop-blur-md bottom-52 right-0 ">     </motion.div>
+            <motion.div
+                initial={false}
                 animate={{ height: isFormExpanded ? 'auto' : '60px' }}
                 transition={{ duration: 0.3 }}
-                className="fixed z-50 bottom-0 left-0 right-0 bg-orange-100 shadow-lg rounded-t-xl overflow-hidden "
+                className="fixed z-50 bottom-0 left-0 right-0 bg-accent shadow-lg rounded-t-xl overflow-hidden backdrop-blur-md "
             >
                 <Button
                     variant="ghost"
-                    className="w-full h-[60px] flex items-center justify-center text-lg font-semibold hover:bg-primary"
+                    className="w-full h-[60px] flex items-center justify-center text-lg font-semibold  "
                     onClick={() => setIsFormExpanded(!isFormExpanded)}
                 >
                     {isFormExpanded ? (
@@ -185,7 +211,7 @@ const Tareas = ({ tareas }: TareasProps) => {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="p-4 space-y-4"
+                            className="p-4 space-y-4 grid grid-cols-3 gap-4"
                             onSubmit={handleSubmit}
                         >
                             <Input
@@ -193,22 +219,57 @@ const Tareas = ({ tareas }: TareasProps) => {
                                 value={newTask.Titulo}
                                 onChange={(e) => setNewTask({ ...newTask, Titulo: e.target.value })}
                                 required
+                                className="col-span-3"
                             />
-                             <Textarea
-                               
+                            <Textarea
+
                                 placeholder="Descripcion"
                                 value={newTask.Descripcion}
                                 onChange={(e) => setNewTask({ ...newTask, Descripcion: e.target.value })}
-                               
+                                className="col-span-3"
                             />
-                             <Input
-                                type="date" // Añadido: input de tipo fecha
-                                placeholder="Fecha (dd/MM/yyyy)"
-                                value={newTask.Fecha}
-                                onChange={(e) => setNewTask({ ...newTask, Fecha: e.target.value })}
-                                required
-                            />
-                            
+                            <div className="col-span-3 grid grid-cols-3 gap-4">
+                                <div className="flex flex-1 justify-center align-middle space-x-4">
+                                    <Label htmlFor="all-day-toggle">Todo el día</Label>
+                                    <Switch
+                                        id="all-day-toggle"
+                                        checked={isAllDay}
+                                        onCheckedChange={(checked) => {
+                                            setIsAllDay(checked);
+                                            setNewTask({ ...newTask, FullDay: checked });
+                                        }}
+                                    />
+
+                                </div>
+                                {isAllDay ? (
+                                    <Input
+                                        type="date"
+                                        placeholder="Fecha de Inicio"
+                                        value={newTask.Fecha_Inicio.toISOString().slice(0, 10)}
+                                        onChange={(e) => setNewTask({ ...newTask, Fecha_Inicio: new Date(e.target.value) })}
+                                        required
+                                    />
+                                ) : (
+                                    <>
+                                        <Input
+                                            type="datetime-local"
+                                            placeholder="Fecha de Inicio"
+                                            value={newTask.Fecha_Inicio.toISOString().slice(0, 16)}
+                                            onChange={(e) => setNewTask({ ...newTask, Fecha_Inicio: new Date(e.target.value) })}
+                                            required
+                                        />
+                                        <Input
+                                            type="datetime-local"
+                                            placeholder="Fecha de Fin"
+                                            value={newTask.Fecha_Fin.toISOString().slice(0, 16)}
+                                            onChange={(e) => setNewTask({ ...newTask, Fecha_Fin: new Date(e.target.value) })}
+                                            required
+                                        />
+                                    </>
+                                )}
+                            </div>
+
+
 
                             <Select
                                 value={newTask.Categoria.name}
@@ -233,7 +294,7 @@ const Tareas = ({ tareas }: TareasProps) => {
                                     ))}
                                 </SelectContent>
                             </Select>
-                            
+
                             <Select
                                 value={newTask.Prioridad}
                                 onValueChange={(value: Priority) => setNewTask({ ...newTask, Prioridad: value })}
@@ -247,7 +308,7 @@ const Tareas = ({ tareas }: TareasProps) => {
                                     <SelectItem value="high">Alta</SelectItem>
                                 </SelectContent>
                             </Select>
-                            <Button type="submit" className="w-full">Agregar Tarea</Button>
+                            <Button type="submit" className="col-start-2">Agregar Tarea</Button>
                         </motion.form>)}
                 </AnimatePresence>
             </motion.div>
@@ -262,30 +323,38 @@ const Tareas = ({ tareas }: TareasProps) => {
                             onDrop={(e) => handleDrop(e as React.DragEvent<HTMLDivElement>, index)} // Type assertion
                             className={cn(
                                 "mb-4 p-4 rounded-lg shadow-md transition-all duration-300 cursor-grab border-r-8 border-b-8 border-spacing-4",
-                                draggingIndex === index ? "bg-gray-300" : "bg-white"
+                                draggingIndex === index ? "bg-gray-300" : "bg-white",
+                                tarea.Hecho ? "bg-gray-200 line-through" : "" // Añadir clase condicionalmente
                             )}
                             animate={{
                                 opacity: draggingIndex === index ? 0.5 : 1, // Reduce opacidad al arrastrar
                                 y: draggingIndex === index ? 0 : undefined,
                                 transition: { type: "tween", ease: "linear", duration: 0.1 }
                             }}
-                            style={{ zIndex: draggingIndex === index ? 100 : 1,borderColor:tarea.Categoria.color }}
+                            style={{ zIndex: draggingIndex === index ? 100 : 1, borderColor: tarea.Categoria.color }}
                         >
+
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center space-x-3">
-                                    <h3 className="text-lg font-semibold">{tarea.Titulo}</h3>
+                                    <input
+                                        type="checkbox"
+                                        checked={tarea.Hecho}
+                                        onChange={() => handleCheckboxChange(index)}
+                                        className="mr-2 cursor-pointer"
+                                    />
+                                    <h3 className={cn("text-lg font-semibold", tarea.Hecho ? "line-through" : "")}>{tarea.Titulo}</h3>
                                 </div>
                                 <Badge className={cn("text-xs font-medium", getPrioridadColor(tarea.Prioridad))}>
                                     {tarea.Prioridad}
                                 </Badge>
                             </div>
-                            <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{tarea.Descripcion}</p>
+                            <p className={cn("mt-2 text-sm", tarea.Hecho ? "text-gray-500 line-through" : "text-gray-600 dark:text-gray-300")}>{tarea.Descripcion}</p>
                             <div className="mt-3 flex items-center justify-between text-sm text-gray-500">
                                 <span className="flex items-center">
                                     <CalendarIcon className="mr-1 h-4 w-4" />
-                                    {tarea.Fecha}
+                                    {format(tarea.Fecha_Inicio, 'dd-MM-yyyy')}
                                 </span>
-                                <Badge variant="outline" style={{borderColor:tarea.Categoria.color}}>{tarea.Categoria.name}</Badge>
+                                <Badge variant="outline" style={{ borderColor: tarea.Categoria.color }}>{tarea.Categoria.name}</Badge>
                             </div>
                         </motion.div>
                     ))}
@@ -300,6 +369,7 @@ const Tareas = ({ tareas }: TareasProps) => {
                     )}
                 </ul>
             </div>
+
 
         </div>
     );

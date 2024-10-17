@@ -30,8 +30,11 @@ const tareasData = [
     Descripcion: 'Leche, huevos, pan y verduras',
     Categoria: { id: 9, name: "SEXO", color: "#fffff" },
     Prioridad: 'Alta',
-    Fecha: '2024-10-15',
+    Fecha_Inicio: new Date('2024-10-15'),
+    Fecha_Fin: new Date('2024-10-15'),
     Hecho:true,
+    FullDay:true,
+
   },
 ];
 const Tasks = () => {

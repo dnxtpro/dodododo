@@ -6,7 +6,7 @@ import Navbar from "./NavBar"
 import Calendar from "./Calendar"
 import { subDays } from "date-fns"
 import { useState } from 'react'
-
+import TablaDia from './TablaDia'
 import { Routes, Route, useLocation } from "react-router-dom";
 import Tasks from './Tasks'
 import Hero from './Hero'
@@ -58,7 +58,13 @@ function App() {
               <Register />
             </motion.div>
           } />
-            <Route path="/login" element={<Login />} />
+            <Route path="/login" element={ <motion.div
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            ><Login />
+            </motion.div>} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/"  element={
             <motion.div
@@ -71,6 +77,7 @@ function App() {
             </motion.div>
           } />
             <Route path="/task" element={<Tasks />} />
+            <Route path="/tabla" element={<TablaDia />} />
             <Route path="/calendar" element={<Calendar events={[{ date: subDays(new Date(), 6), title: "sexo matutino", description: "sexo deverdad" }]} onDateSelect={handleDateSelect} />} />
 
           </Routes>
