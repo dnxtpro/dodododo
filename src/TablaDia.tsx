@@ -10,11 +10,25 @@ import {
     isSameDay,isAfter,isBefore
 } from "date-fns";
 import { useState, useEffect,useRef } from "react";
+import eventService from "./services/event.service";
 
-interface Event {
-    title: string;
-    start: Date;
-    end: Date;
+interface Tarea {
+    Titulo: string;
+    Descripcion: string;
+    Categoria: Category;
+    Prioridad: string;
+    Fecha_Inicio: Date;
+    Hecho: boolean;
+    FullDay: boolean;
+    Fecha_Fin: Date;
+
+
+}
+interface Category {
+
+    id: number;
+    name: string;
+    color: string;
 }
 
 const getWeekDays = (startDate: Date) => {
@@ -41,6 +55,7 @@ const getTimeSlots = () => {
 };
 
 const TablaDia = () => {
+    const [events, setEvents] = useState<Tarea[]>([]);
     const timeContainerRef = useRef<HTMLDivElement>(null);
     const [currentDate] = useState(new Date());
     const [currentTime, setCurrentTime] = useState(new Date());
@@ -50,7 +65,7 @@ const TablaDia = () => {
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentTime(new Date());
-        }, 60000); // Actualiza cada minuto
+        }, 60000); // Actualiza cada wow
 
         return () => clearInterval(interval);
         
@@ -93,23 +108,42 @@ const TablaDia = () => {
     const linePosition = calculateLinePosition(currentTime);
 
     // Ejemplo de eventos
-    const events: Event[] = [
-        {
-            title: "Evento 1",
-            start: new Date(2024, 9, 17, 18, 40),
-            end: new Date(2024, 9, 17, 21, 10),
-        },
-        {
-            title: "Evento 2",
-            start: new Date(2024, 9, 17, 20, 0),
-            end: new Date(2024, 9, 17, 20, 30),
-        },
-        {
-            title: "Evento 3",
-            start: new Date(2024, 9, 17, 3, 20),
-            end: new Date(2024, 9, 17, 12, 30),
-        },
-    ];
+    
+    const recibirEvento = async () => {
+        try {
+            const tareas = await eventService.getTasks();
+            const formattedTareas = tareas.map((tarea: Tarea) => ({
+                ...tarea,
+                Fecha_Inicio: new Date(tarea.Fecha_Inicio),
+                Fecha_Fin: new Date(tarea.Fecha_Fin)
+            }));
+            setEvents(formattedTareas);
+            console.log('Tareas obtenidas:', formattedTareas);
+        } catch (error) {
+            console.error('Error al obtener las tareas:', error);
+        }
+    };
+
+    useEffect(() => {
+        recibirEvento();
+    }, [])
+
+    const lightenColor = (color:string, percent:number) => {
+    const num = parseInt(color.replace("#", ""), 16),
+        amt = Math.round(2.55 * percent),
+        R = (num >> 16) + amt,
+        G = ((num >> 8) & 0x00ff) + amt,
+        B = (num & 0x0000ff) + amt;
+    return (
+        "#" +
+        (0x1000000 +
+            (R < 255 ? (R < 1 ? 0 : R) : 255) * 0x10000 +
+            (G < 255 ? (G < 1 ? 0 : G) : 255) * 0x100 +
+            (B < 255 ? (B < 1 ? 0 : B) : 255))
+            .toString(16)
+            .slice(1)
+    );
+};
 
     return (
         <div className="w-5/6 max-h-screen overflow-auto mx-auto h-[75vh]">
@@ -160,11 +194,11 @@ const TablaDia = () => {
                             const isCurrentDay = isSameDay(day, currentTime);
 
                             return (
-                                <div className="flex-1 p-2 border-t border-l border-gray-300 relative" key={index}>
+                                <div className="flex-1 p-2  border-l border-b border-gray-300 relative" key={index}>
                                     {/* Verificar si hay eventos en este slot */}
                                     {events.map((event, eventIndex) => {
-                                        const eventStart = event.start;
-                                        const eventEnd = event.end;
+                                        const eventStart = event.Fecha_Inicio;
+                                        const eventEnd = event.Fecha_Fin;
 
                                         // Verificar si el evento se superpone con este slot
                                         const isEventInSlot =
@@ -179,16 +213,19 @@ const TablaDia = () => {
                                             return (
                                                 <div
                                                     key={eventIndex}
-                                                    className="absolute bg-yellow-200 p-1 rounded-xl border-yellow-500 border-2 text-yellow-900"
+                                                    className="absolute font-bold p-1 rounded-lg border mx-2 text-yellow-900  hover:scale-110 transition-transform duration-200"
                                                     style={{
                                                         top: `${topPercentage}%`,
                                                         height: `${heightPercentage}%`,
                                                         left: "0",
                                                         right: "0",
+                                                        borderColor:event.Categoria.color,
+                                                        color:event.Categoria.color,
+                                                        backgroundColor: lightenColor(event.Categoria.color, 70),
                                                     }}
                                                 >
-                                                    {event.title}
-                                                    <p className="text-l text-yellow-700 ">{format(eventStart,"HH:mm")}-{format(eventEnd,"HH:mm")}</p>
+                                                    {event.Titulo}
+                                                    <p className="text-l font-normal ">{format(eventStart,"HH:mm")}-{format(eventEnd,"HH:mm")}</p>
                                                 </div>
                                             );
                                         }
