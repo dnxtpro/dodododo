@@ -15,6 +15,12 @@ import eventService from "./services/event.service";
 import toast from "react-hot-toast";
 import { Switch } from "./components/ui/switch"
 import { Label } from "./components/ui/label"
+import DatePicker from 'react-datepicker'
+import { ClockIcon, SunIcon, MoonIcon, Check, X } from 'lucide-react'
+
+
+import 'react-datepicker/dist/react-datepicker.css'
+import './custom.css'
 
 interface Tarea {
     Titulo: string;
@@ -168,6 +174,17 @@ const Tareas = ({ tareas }: TareasProps) => {
         }
         setDraggingIndex(null);
     };
+    const toggleVariants = {
+        day: { backgroundColor: "hsl(0, 0%, 60%)", rotate: 0 },
+        night: { backgroundColor: "rgb(35, 90, 55)", rotate: 180 }
+    }
+
+
+
+    const timePickerVariants = {
+        enabled: { opacity: 1, filter: "grayscale(0%)" },
+        disabled: { opacity: 0.5, filter: "grayscale(100%)" }
+      }
 
     return (
         <div className="relative">
@@ -177,11 +194,7 @@ const Tareas = ({ tareas }: TareasProps) => {
 
                 </CardHeader>
             </Card>
-            <motion.div
-                initial={false}
-                animate={{ height: isFormExpanded ? '100vh' : 'auto', width: isFormExpanded ? '100vw' : 'auto' }}
-                transition={{ duration: 0.3 }}
-                className="fixed z-40 backdrop-blur-md bottom-52 right-0 ">     </motion.div>
+
             <motion.div
                 initial={false}
                 animate={{ height: isFormExpanded ? 'auto' : '60px' }}
@@ -219,54 +232,174 @@ const Tareas = ({ tareas }: TareasProps) => {
                                 value={newTask.Titulo}
                                 onChange={(e) => setNewTask({ ...newTask, Titulo: e.target.value })}
                                 required
-                                className="col-span-3"
+                                className="col-span-3 bg-white"
                             />
                             <Textarea
 
                                 placeholder="Descripcion"
                                 value={newTask.Descripcion}
                                 onChange={(e) => setNewTask({ ...newTask, Descripcion: e.target.value })}
-                                className="col-span-3"
+                                className="col-span-3 bg-white"
                             />
-                            <div className="col-span-3 grid grid-cols-3 gap-4">
-                                <div className="flex flex-1 justify-center align-middle space-x-4">
-                                    <Label htmlFor="all-day-toggle">Todo el día</Label>
-                                    <Switch
-                                        id="all-day-toggle"
-                                        checked={isAllDay}
-                                        onCheckedChange={(checked) => {
-                                            setIsAllDay(checked);
-                                            setNewTask({ ...newTask, FullDay: checked });
-                                        }}
-                                    />
+                            <div className="  flex flex-col h-[20vh]">
+                                <div className="flex flex-col text-center justify-center space-y-4">
+                                    <Label htmlFor="all-day-toggle">El evento dura todo el dia?</Label>
+                                    <motion.button
+                                        type="button"
+                                        role="switch"
+                                        aria-checked={isAllDay}
+                                        onClick={() => setIsAllDay(!isAllDay)}
+                                        className=" self-center place-content-center relative inline-flex flex-shrink-0 h-10 w-20 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 "
+                                        animate={isAllDay ? "night" : "day"}
+                                        variants={toggleVariants}
+                                    >
+                                        <span className="sr-only">Use full day</span>
+                                        <motion.span
+                                            className="pointer-events-none absolute left-0 inline-block h-9 w-9 rounded-full bg-white shadow transform ring-0 transition-transform duration-200 ease-in-out"
+                                            animate={{ x: isAllDay ? 40 : 0 }}
+                                            transition={{ type: "spring", stiffness: 700, damping: 30 }}
+                                        />
+                                        <div className="absolute inset-0 overflow-hidden rounded-full">
+                                            <AnimatePresence initial={false}>
+                                                {!isAllDay && (
+                                                    <motion.div
+                                                        key="sun"
+                                                        initial={{ opacity: 0, scale: 0.5 }}
+                                                        animate={{ opacity: 1, scale: 1 }}
+                                                        exit={{ opacity: 0, scale: 0.5 }}
+                                                        transition={{ duration: 0.2 }}
+                                                        className="absolute inset-0 flex items-center justify-center"
+                                                    >
+                                                        <X className="h-6 w-6 text-gray-700" />
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
+                                            <AnimatePresence initial={false}>
+                                                {isAllDay && (
+                                                    <motion.div
+                                                        key="moon"
+                                                        initial={{ opacity: 0, scale: 0.5 }}
+                                                        animate={{ opacity: 1, scale: 1 }}
+                                                        exit={{ opacity: 0, scale: 0.5 }}
+                                                        transition={{ duration: 0.2 }}
+                                                        className="absolute inset-0 flex items-center justify-center"
+                                                    >
+                                                        <Check className="h-6 w-6 text-green-400 rotate-180" />
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
+                                        </div>
+
+                                    </motion.button>
 
                                 </div>
-                                {isAllDay ? (
-                                    <Input
-                                        type="date"
-                                        placeholder="Fecha de Inicio"
-                                        value={newTask.Fecha_Inicio.toISOString().slice(0, 10)}
-                                        onChange={(e) => setNewTask({ ...newTask, Fecha_Inicio: new Date(e.target.value) })}
-                                        required
-                                    />
-                                ) : (
-                                    <>
-                                        <Input
-                                            type="datetime-local"
-                                            placeholder="Fecha de Inicio"
-                                            value={newTask.Fecha_Inicio.toISOString().slice(0, 16)}
-                                            onChange={(e) => setNewTask({ ...newTask, Fecha_Inicio: new Date(e.target.value) })}
-                                            required
-                                        />
-                                        <Input
-                                            type="datetime-local"
-                                            placeholder="Fecha de Fin"
-                                            value={newTask.Fecha_Fin.toISOString().slice(0, 16)}
-                                            onChange={(e) => setNewTask({ ...newTask, Fecha_Fin: new Date(e.target.value) })}
-                                            required
-                                        />
-                                    </>
-                                )}
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="col-span-2" >
+                                        <label htmlFor="Fecha_Inicio" className="block text-sm font-medium text-gray-700 mb-2">
+                                            Fecha
+                                        </label>
+                                        <div className="relative">
+                                            <DatePicker
+                                                selected={newTask.Fecha_Inicio}
+                                                onChange={(date: Date | null) => {
+                                                    if (date) {
+                                                        setNewTask({ ...newTask, Fecha_Inicio: date });
+                                                    }
+                                                }}
+                                                dateFormat="dd/MM/yyyy"
+                                                className="block w-full pl-10 pr-3 py-2 border-2 border-purple-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent sm:text-sm"
+                                                placeholderText="Select start time"
+                                                calendarClassName="bg-white shadow-lg rounded-lg border-2 border-purple-200"
+                                                wrapperClassName="w-full"
+                                                popperClassName="custom-popper"
+                                                dayClassName={date =>
+                                                    date.getDate() === new Date().getDate()
+                                                        ? "bg-purple-100 rounded-full text-purple-800 font-bold"
+                                                        : "text-gray-700"
+                                                }
+                                            />
+                                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                                <CalendarIcon className="h-5 w-5 text-purple-500" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <AnimatePresence>
+                                        
+                                            <motion.div
+                                                animate={isAllDay ? "disabled" : "enabled"}
+                                                variants={timePickerVariants}
+                                                transition={{ duration: 0.3, ease: "easeInOut" }}
+                                                className="flex-row flex space-x-4 ">
+
+                                                <div className="mx-auto">
+                                                    <label htmlFor="startTime" className="block text-sm font-medium text-gray-700 mb-2">
+                                                        Start Time
+                                                    </label>
+                                                    <div className="relative ">
+                                                        <DatePicker
+                                                            selected={newTask.Fecha_Inicio ? new Date(newTask.Fecha_Inicio) : null} // Muestra la Fecha_Inicio
+                                                            onChange={(time: Date | null) => {
+                                                                if (time && newTask.Fecha_Inicio) {
+                                                                    const newFechaInicio = new Date(newTask.Fecha_Inicio); // Crea una nueva fecha a partir de la Fecha_Inicio
+                                                                    newFechaInicio.setHours(time.getHours(), time.getMinutes()); // Establece las horas y minutos
+                                                                    setNewTask({ ...newTask, Fecha_Inicio: newFechaInicio }); // Actualiza Fecha_Inicio
+                                                                }
+                                                            }}
+                                                            showTimeSelect
+                                                            showTimeSelectOnly
+                                                            timeIntervals={15}
+                                                            timeCaption="End Time"
+                                                            dateFormat="h:mm aa"
+                                                            className="block w-full pl-10 pr-3 py-2 border-2 border-purple-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent sm:text-sm"
+                                                            placeholderText="Select end time"
+                                                            disabled={isAllDay}
+                                                        />
+                                                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                                            <ClockIcon className="h-5 w-5 text-purple-500" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="mx-auto"> 
+                                                    <label htmlFor="endTime" className="block text-sm font-medium text-gray-700 mb-2">
+                                                        End Time
+                                                    </label>
+                                                    <div className="relative ">
+                                                        <DatePicker
+                                                            selected={newTask.Fecha_Fin ? new Date(newTask.Fecha_Fin) : null} // Muestra la fecha seleccionada
+                                                            onChange={(time: Date | null) => {
+                                                                if (time) {
+                                                                    // Aquí puedes calcular y actualizar la Fecha_Fin
+                                                                    const fechaInicio = newTask.Fecha_Inicio;
+                                                                    if (fechaInicio) {
+                                                                        const newFechaFin = new Date(fechaInicio); // Crea una nueva fecha a partir de la Fecha_Inicio
+                                                                        newFechaFin.setHours(time.getHours(), time.getMinutes()); // Establece la hora de fin
+                                                                        setNewTask({ ...newTask, Fecha_Fin: newFechaFin }); // Actualiza Fecha_Fin
+                                                                    }
+                                                                }
+                                                            }}
+                                                            showTimeSelect
+                                                            showTimeSelectOnly
+                                                            timeIntervals={15}
+                                                            timeCaption="End Time"
+                                                            dateFormat="h:mm aa"
+                                                            className="block w-full pl-10 pr-3 py-2 border-2 border-purple-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent sm:text-sm"
+                                                            placeholderText="Select end time"
+                                                            disabled={isAllDay}
+                                                        // Otras propiedades...
+                                                        />
+                                                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                                            <ClockIcon className="h-5 w-5 text-purple-500" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </motion.div>
+
+                                    
+                                    </AnimatePresence>
+                                </div>
+
                             </div>
 
 
@@ -280,7 +413,7 @@ const Tareas = ({ tareas }: TareasProps) => {
                                     }
                                 }}
                             >
-                                <SelectTrigger>
+                                <SelectTrigger className="bg-white">
                                     <SelectValue placeholder="Seleccionar categoría" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -298,8 +431,9 @@ const Tareas = ({ tareas }: TareasProps) => {
                             <Select
                                 value={newTask.Prioridad}
                                 onValueChange={(value: Priority) => setNewTask({ ...newTask, Prioridad: value })}
+
                             >
-                                <SelectTrigger>
+                                <SelectTrigger className="bg-white">
                                     <SelectValue placeholder="Seleccionar prioridad" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -308,6 +442,30 @@ const Tareas = ({ tareas }: TareasProps) => {
                                     <SelectItem value="high">Alta</SelectItem>
                                 </SelectContent>
                             </Select>
+
+                            <div className="mb-4 col-start-2 col-span-2 mx-10  p-4 rounded-lg transition-all duration-300 border-r-8 border-b-8 border-spacing-4 cristalizado shadow-inner"
+                                style={{ borderColor: newTask.Categoria.color }}>
+
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center space-x-3">
+
+                                        <h3 className={cn("text-lg font-semibold", newTask.Hecho ? "line-through" : "")}>{newTask.Titulo}</h3>
+                                        <p className={cn("mt-2 text-sm", newTask.Hecho ? "text-gray-500 line-through"
+                                            : "text-gray-600 dark:text-gray-300")}>{newTask.Descripcion}</p>
+                                    </div>
+                                    <Badge className={cn("text-xs font-medium", getPrioridadColor(newTask.Prioridad))}>
+                                        {newTask.Prioridad}
+                                    </Badge>
+                                </div>
+
+                                <div className="mt-3 flex items-center justify-between text-sm text-gray-500">
+                                    <span className="flex items-center">
+                                        <CalendarIcon className="mr-1 h-4 w-4" />
+                                        {format(newTask.Fecha_Inicio, 'dd-MM-yyyy')}
+                                    </span>
+                                    <Badge variant="outline" style={{ borderColor: newTask.Categoria.color }}>{newTask.Categoria.name}</Badge>
+                                </div>
+                            </div>
                             <Button type="submit" className="col-start-2">Agregar Tarea</Button>
                         </motion.form>)}
                 </AnimatePresence>
@@ -322,9 +480,9 @@ const Tareas = ({ tareas }: TareasProps) => {
                             onDragOver={(e) => handleDragOver(e as React.DragEvent<HTMLDivElement>, index)} // Type assertion
                             onDrop={(e) => handleDrop(e as React.DragEvent<HTMLDivElement>, index)} // Type assertion
                             className={cn(
-                                "mb-4 p-4 rounded-lg shadow-md transition-all duration-300 cursor-grab border-r-8 border-b-8 border-spacing-4",
+                                "mb-4 p-4 rounded-lg transition-all duration-300 cursor-grab border-r-8 border-b-8 border-spacing-4 cristalizado shadow-inner",
                                 draggingIndex === index ? "bg-gray-300" : "bg-white",
-                                tarea.Hecho ? "bg-gray-200 line-through" : "" // Añadir clase condicionalmente
+                                tarea.Hecho ? "cristalizadooff line-through border-0" : "" // Añadir clase condicionalmente
                             )}
                             animate={{
                                 opacity: draggingIndex === index ? 0.5 : 1, // Reduce opacidad al arrastrar
@@ -343,12 +501,13 @@ const Tareas = ({ tareas }: TareasProps) => {
                                         className="mr-2 cursor-pointer"
                                     />
                                     <h3 className={cn("text-lg font-semibold", tarea.Hecho ? "line-through" : "")}>{tarea.Titulo}</h3>
+                                    <p className={cn("mt-2 text-sm", tarea.Hecho ? "text-gray-500 line-through" : "text-gray-600 dark:text-gray-300")}>{tarea.Descripcion}</p>
                                 </div>
                                 <Badge className={cn("text-xs font-medium", getPrioridadColor(tarea.Prioridad))}>
                                     {tarea.Prioridad}
                                 </Badge>
                             </div>
-                            <p className={cn("mt-2 text-sm", tarea.Hecho ? "text-gray-500 line-through" : "text-gray-600 dark:text-gray-300")}>{tarea.Descripcion}</p>
+
                             <div className="mt-3 flex items-center justify-between text-sm text-gray-500">
                                 <span className="flex items-center">
                                     <CalendarIcon className="mr-1 h-4 w-4" />

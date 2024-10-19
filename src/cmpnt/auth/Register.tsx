@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import { Link } from "react-router-dom";
 import AuthService from "../../services/auth.service";
 import { Button } from "@/components/ui/button";
 import {useNavigate } from "react-router-dom";
@@ -122,6 +123,14 @@ const Register = () => {
         )}
       </form>
       </CardContent>
+      <CardFooter>
+      <div className="text-sm text-center text-gray-500">
+            Already have an account?{" "}
+            <Link to={'/login'} className="text-primary hover:underline">
+              Log in
+            </Link>
+          </div>
+      </CardFooter>
     </Card>
   );
 };

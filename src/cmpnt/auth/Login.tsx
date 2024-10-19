@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Alert } from "@/components/ui/alert";
 
 import AuthService from "../../services/auth.service";
+import { Lock, User } from "lucide-react";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -68,25 +69,35 @@ const Login = () => {
       <form onSubmit={handleLogin}>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="username">Username</Label>
+            <Label htmlFor="username" className="text-sm font-semibold">Username</Label>
+            <div className="relative">
+            <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
             <Input
               name="username"
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter your username"
+              className="pl-10"
               required
             />
+            </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password" className="text-sm font-semibold">Password</Label>
+            <div className="relative">
+            <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
             <Input
               name="password"
               type="password"
               value={password}
+              placeholder="Enter your password"
+                className="pl-10"
               onChange={(e) => setPassword(e.target.value)}
               required
             />
+            </div>
           </div>
 
           {message && (
