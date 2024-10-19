@@ -13,10 +13,10 @@ import { format } from 'date-fns'
 import { Textarea } from "./components/ui/textarea";
 import eventService from "./services/event.service";
 import toast from "react-hot-toast";
-import { Switch } from "./components/ui/switch"
+
 import { Label } from "./components/ui/label"
 import DatePicker from 'react-datepicker'
-import { ClockIcon, SunIcon, MoonIcon, Check, X } from 'lucide-react'
+import { ClockIcon, Check, X } from 'lucide-react'
 
 
 import 'react-datepicker/dist/react-datepicker.css'
