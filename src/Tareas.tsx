@@ -349,7 +349,7 @@ const Tareas = ({ tareas }: TareasProps) => {
                                                             showTimeSelect
                                                             showTimeSelectOnly
                                                             timeIntervals={15}
-                                                            timeCaption="End Time"
+                                                            timeCaption="Start Time"
                                                             dateFormat="h:mm aa"
                                                             className="block w-full pl-10 pr-3 py-2 border-2 border-purple-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent sm:text-sm"
                                                             placeholderText="Select end time"
