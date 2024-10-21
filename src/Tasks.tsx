@@ -26,6 +26,7 @@ import {
 } from "./components/ui/drawer";
 const tareasData = [
   {
+    Id:0,
     Titulo: 'Comprar comestibles',
     Descripcion: 'Leche, huevos, pan y verduras',
     Categoria: { id: 9, name: "SEXO", color: "#fffff" },
@@ -34,6 +35,7 @@ const tareasData = [
     Fecha_Fin: new Date('2024-10-15'),
     Hecho:true,
     FullDay:true,
+    Tipo:"",
 
   },
 ];

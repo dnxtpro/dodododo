@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import AuthService from "../../services/auth.service";
 import { Button } from "@/components/ui/button";
 import {useNavigate } from "react-router-dom";
+import { User,LockIcon,MailIcon } from "lucide-react";
 
 const Register = () => {
   const navigate = useNavigate(); 
@@ -77,36 +78,50 @@ const Register = () => {
       <CardContent>
       <form onSubmit={handleRegister}>
         <div className="mb-4">
-          <Label htmlFor="username">Username</Label>
+          <Label className="text-sm font-semibold" htmlFor="username">Username</Label>
+          <div className="relative">
+          <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
           <Input
             id="username"
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className={`mt-1 ${message.includes("Username") ? "border-red-500" : ""}`}
-          />
+            className={`mt-1 pl-10 ${message.includes("Username") ? "border-red-500" : ""}`}
+            placeholder="Introduce tu usuario"
+            />
+          </div>
         </div>
 
         <div className="mb-4">
-          <Label htmlFor="email">Email</Label>
+          <Label className="text-sm font-semibold" htmlFor="email">Email</Label>
+          <div className="relative">
+          <MailIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
           <Input
             id="email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className={`mt-1 ${message.includes("Email") ? "border-red-500" : ""}`}
+            className={`mt-1 pl-10 ${message.includes("Email") ? "border-red-500" : ""}`}
+            placeholder="Introduce tu correo"
+
           />
+        </div>
         </div>
 
         <div className="mb-4">
-          <Label htmlFor="password">Password</Label>
+          <Label className="text-sm font-semibold" htmlFor="password">Password</Label>
+          <div className="relative">
+          <LockIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
           <Input
             id="password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className={`mt-1 ${message.includes("Password") ? "border-red-500" : ""}`}
+            className={`mt-1 pl-10 ${message.includes("Password") ? "border-red-500" : ""}`}
+            placeholder="Introduce una contrasena"
+
           />
+        </div>
         </div>
 
         <Button type="submit" className="w-full">Sign Up</Button>

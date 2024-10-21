@@ -1,6 +1,6 @@
 import { Card, CardHeader, CardTitle } from "./components/ui/card";
 import { Badge } from "./components/ui/badge";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Reorder } from "framer-motion";
 import { CalendarIcon } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 import { cn } from "./lib/utils";
@@ -23,6 +23,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import './custom.css'
 
 interface Tarea {
+    Id: number;
     Titulo: string;
     Descripcion: string;
     Categoria: Category;
@@ -31,7 +32,7 @@ interface Tarea {
     Hecho: boolean;
     FullDay: boolean;
     Fecha_Fin: Date;
-
+    Tipo:string;
 
 }
 type Priority = 'low' | 'medium' | 'high'
@@ -48,19 +49,21 @@ interface Category {
 }
 const Tareas = ({ tareas }: TareasProps) => {
     const [listaTareas, setListaTareas] = useState(tareas);
-    const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
+    const [draggingIndex] = useState<number | null>(null);
     const [categories, setCategories] = useState<Category[]>([]);
     const [isFormExpanded, setIsFormExpanded] = useState(false);
     const [isAllDay, setIsAllDay] = useState(false);
     const [newTask, setNewTask] = useState<Tarea>({
+        Id:0,
         Titulo: "",
         Descripcion: "",
         Categoria: { id: 0, name: "", color: "" },
-        Prioridad: "media",
+        Prioridad: "",
         Fecha_Inicio: new Date(),
         Fecha_Fin: new Date(),
         FullDay: true,
-        Hecho: false
+        Hecho: false,
+        Tipo: "Evento",
     });
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -70,14 +73,16 @@ const Tareas = ({ tareas }: TareasProps) => {
         setListaTareas(updatedTasks);
         enviar(newTask);
         setNewTask({
+            Id:0,
             Titulo: "",
             Descripcion: "",
             Categoria: { id: 0, name: "", color: "" },
-            Prioridad: "media",
+            Prioridad: "",
             Fecha_Inicio: new Date(),
             Fecha_Fin: new Date(),
             FullDay: true,
-            Hecho: false
+            Hecho: false,
+            Tipo: "Evento",
         }); // Actualiza el estado con la nueva lista de tareas
         setIsFormExpanded(false); // Cierra el formulario
     };
@@ -134,6 +139,8 @@ const Tareas = ({ tareas }: TareasProps) => {
         }// Llamamos a la función recibir cuando se monta el componente
     }, []);
 
+    
+
 
     const getPrioridadColor = (prioridad: string) => {
         switch (prioridad.toLowerCase()) {
@@ -144,36 +151,7 @@ const Tareas = ({ tareas }: TareasProps) => {
         }
     };
 
-    const swapItems = (arr: Tarea[], fromIndex: number, toIndex: number) => {
-        const updatedArr = [...arr];
-        const [movedItem] = updatedArr.splice(fromIndex, 1);
-        updatedArr.splice(toIndex, 0, movedItem);
-        return updatedArr;
-    };
-
-    const handleDragStart = (e: React.DragEvent<HTMLDivElement>, index: number) => {
-        e.dataTransfer.setData("taskIndex", index.toString());
-        setDraggingIndex(index);
-    };
-
-    const handleDragOver = (e: React.DragEvent<HTMLDivElement>, index: number) => {
-        e.preventDefault();
-        const draggedIndex = parseInt(e.dataTransfer.getData("taskIndex"));
-        if (draggedIndex !== index) {
-            setDraggingIndex(index);
-        }
-    };
-
-    const handleDrop = (e: React.DragEvent<HTMLDivElement>, index: number) => {
-        e.preventDefault();
-        const draggedIndex = parseInt(e.dataTransfer.getData("taskIndex"));
-        if (draggedIndex !== index) {
-            const updatedTareas = swapItems(listaTareas, draggedIndex, index);
-            setListaTareas(updatedTareas);
-
-        }
-        setDraggingIndex(null);
-    };
+ 
     const toggleVariants = {
         day: { backgroundColor: "hsl(0, 0%, 60%)", rotate: 0 },
         night: { backgroundColor: "rgb(35, 90, 55)", rotate: 180 }
@@ -184,7 +162,7 @@ const Tareas = ({ tareas }: TareasProps) => {
     const timePickerVariants = {
         enabled: { opacity: 1, filter: "grayscale(0%)" },
         disabled: { opacity: 0.5, filter: "grayscale(100%)" }
-      }
+    }
 
     return (
         <div className="relative">
@@ -241,6 +219,46 @@ const Tareas = ({ tareas }: TareasProps) => {
                                 onChange={(e) => setNewTask({ ...newTask, Descripcion: e.target.value })}
                                 className="col-span-3 bg-white"
                             />
+                            <div className="col-span-3 flex flex-row space-x-10">
+                                <Select
+                                    value={newTask.Categoria.name}
+                                    onValueChange={(value) => {
+                                        const selectedCategory = categories.find(cat => cat.name === value);
+                                        if (selectedCategory) {
+                                            setNewTask({ ...newTask, Categoria: selectedCategory }); // Establece la categoría completa
+                                        }
+                                    }}
+                                >
+                                    <SelectTrigger className="bg-white">
+                                        <SelectValue placeholder="Seleccionar categoría" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {categories.map((category) => (
+                                            <SelectItem key={category.name} value={category.name}>
+                                                <div className="flex items-center">
+                                                    <div className={`w-3 h-3 rounded-full mr-2`} style={{ backgroundColor: category.color }} />
+                                                    {category.name}
+                                                </div>
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+
+                                <Select
+                                    value={newTask.Prioridad}
+                                    onValueChange={(value: Priority) => setNewTask({ ...newTask, Prioridad: value })}
+
+                                >
+                                    <SelectTrigger className="bg-white">
+                                        <SelectValue placeholder="Seleccionar prioridad" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="low">Baja</SelectItem>
+                                        <SelectItem value="medium">Media</SelectItem>
+                                        <SelectItem value="high">Alta</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
                             <div className="  flex flex-col h-[20vh]">
                                 <div className="flex flex-col text-center justify-center space-y-4">
                                     <Label htmlFor="all-day-toggle">El evento dura todo el dia?</Label>
@@ -325,78 +343,78 @@ const Tareas = ({ tareas }: TareasProps) => {
                                     </div>
 
                                     <AnimatePresence>
-                                        
-                                            <motion.div
-                                                animate={isAllDay ? "disabled" : "enabled"}
-                                                variants={timePickerVariants}
-                                                transition={{ duration: 0.3, ease: "easeInOut" }}
-                                                className="flex-row flex space-x-4 ">
 
-                                                <div className="mx-auto">
-                                                    <label htmlFor="startTime" className="block text-sm font-medium text-gray-700 mb-2">
-                                                        Start Time
-                                                    </label>
-                                                    <div className="relative ">
-                                                        <DatePicker
-                                                            selected={newTask.Fecha_Inicio ? new Date(newTask.Fecha_Inicio) : null} // Muestra la Fecha_Inicio
-                                                            onChange={(time: Date | null) => {
-                                                                if (time && newTask.Fecha_Inicio) {
-                                                                    const newFechaInicio = new Date(newTask.Fecha_Inicio); // Crea una nueva fecha a partir de la Fecha_Inicio
-                                                                    newFechaInicio.setHours(time.getHours(), time.getMinutes()); // Establece las horas y minutos
-                                                                    setNewTask({ ...newTask, Fecha_Inicio: newFechaInicio }); // Actualiza Fecha_Inicio
-                                                                }
-                                                            }}
-                                                            showTimeSelect
-                                                            showTimeSelectOnly
-                                                            timeIntervals={15}
-                                                            timeCaption="Start Time"
-                                                            dateFormat="h:mm aa"
-                                                            className="block w-full pl-10 pr-3 py-2 border-2 border-purple-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent sm:text-sm"
-                                                            placeholderText="Select end time"
-                                                            disabled={isAllDay}
-                                                        />
-                                                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                                            <ClockIcon className="h-5 w-5 text-purple-500" />
-                                                        </div>
+                                        <motion.div
+                                            animate={isAllDay ? "disabled" : "enabled"}
+                                            variants={timePickerVariants}
+                                            transition={{ duration: 0.3, ease: "easeInOut" }}
+                                            className="flex-row flex space-x-4 ">
+
+                                            <div className="mx-auto">
+                                                <label htmlFor="startTime" className="block text-sm font-medium text-gray-700 mb-2">
+                                                    Start Time
+                                                </label>
+                                                <div className="relative ">
+                                                    <DatePicker
+                                                        selected={newTask.Fecha_Inicio ? new Date(newTask.Fecha_Inicio) : null} // Muestra la Fecha_Inicio
+                                                        onChange={(time: Date | null) => {
+                                                            if (time && newTask.Fecha_Inicio) {
+                                                                const newFechaInicio = new Date(newTask.Fecha_Inicio); // Crea una nueva fecha a partir de la Fecha_Inicio
+                                                                newFechaInicio.setHours(time.getHours(), time.getMinutes()); // Establece las horas y minutos
+                                                                setNewTask({ ...newTask, Fecha_Inicio: newFechaInicio }); // Actualiza Fecha_Inicio
+                                                            }
+                                                        }}
+                                                        showTimeSelect
+                                                        showTimeSelectOnly
+                                                        timeIntervals={15}
+                                                        timeCaption="Start Time"
+                                                        dateFormat="h:mm aa"
+                                                        className="block w-full pl-10 pr-3 py-2 border-2 border-purple-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent sm:text-sm"
+                                                        placeholderText="Select end time"
+                                                        disabled={isAllDay}
+                                                    />
+                                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                                        <ClockIcon className="h-5 w-5 text-purple-500" />
                                                     </div>
                                                 </div>
+                                            </div>
 
-                                                <div className="mx-auto"> 
-                                                    <label htmlFor="endTime" className="block text-sm font-medium text-gray-700 mb-2">
-                                                        End Time
-                                                    </label>
-                                                    <div className="relative ">
-                                                        <DatePicker
-                                                            selected={newTask.Fecha_Fin ? new Date(newTask.Fecha_Fin) : null} // Muestra la fecha seleccionada
-                                                            onChange={(time: Date | null) => {
-                                                                if (time) {
-                                                                    // Aquí puedes calcular y actualizar la Fecha_Fin
-                                                                    const fechaInicio = newTask.Fecha_Inicio;
-                                                                    if (fechaInicio) {
-                                                                        const newFechaFin = new Date(fechaInicio); // Crea una nueva fecha a partir de la Fecha_Inicio
-                                                                        newFechaFin.setHours(time.getHours(), time.getMinutes()); // Establece la hora de fin
-                                                                        setNewTask({ ...newTask, Fecha_Fin: newFechaFin }); // Actualiza Fecha_Fin
-                                                                    }
+                                            <div className="mx-auto">
+                                                <label htmlFor="endTime" className="block text-sm font-medium text-gray-700 mb-2">
+                                                    End Time
+                                                </label>
+                                                <div className="relative ">
+                                                    <DatePicker
+                                                        selected={newTask.Fecha_Fin ? new Date(newTask.Fecha_Fin) : null} // Muestra la fecha seleccionada
+                                                        onChange={(time: Date | null) => {
+                                                            if (time) {
+                                                                // Aquí puedes calcular y actualizar la Fecha_Fin
+                                                                const fechaInicio = newTask.Fecha_Inicio;
+                                                                if (fechaInicio) {
+                                                                    const newFechaFin = new Date(fechaInicio); // Crea una nueva fecha a partir de la Fecha_Inicio
+                                                                    newFechaFin.setHours(time.getHours(), time.getMinutes()); // Establece la hora de fin
+                                                                    setNewTask({ ...newTask, Fecha_Fin: newFechaFin }); // Actualiza Fecha_Fin
                                                                 }
-                                                            }}
-                                                            showTimeSelect
-                                                            showTimeSelectOnly
-                                                            timeIntervals={15}
-                                                            timeCaption="End Time"
-                                                            dateFormat="h:mm aa"
-                                                            className="block w-full pl-10 pr-3 py-2 border-2 border-purple-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent sm:text-sm"
-                                                            placeholderText="Select end time"
-                                                            disabled={isAllDay}
-                                                        // Otras propiedades...
-                                                        />
-                                                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                                            <ClockIcon className="h-5 w-5 text-purple-500" />
-                                                        </div>
+                                                            }
+                                                        }}
+                                                        showTimeSelect
+                                                        showTimeSelectOnly
+                                                        timeIntervals={15}
+                                                        timeCaption="End Time"
+                                                        dateFormat="h:mm aa"
+                                                        className="block w-full pl-10 pr-3 py-2 border-2 border-purple-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent sm:text-sm"
+                                                        placeholderText="Select end time"
+                                                        disabled={isAllDay}
+                                                    // Otras propiedades...
+                                                    />
+                                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                                        <ClockIcon className="h-5 w-5 text-purple-500" />
                                                     </div>
                                                 </div>
-                                            </motion.div>
+                                            </div>
+                                        </motion.div>
 
-                                    
+
                                     </AnimatePresence>
                                 </div>
 
@@ -404,44 +422,7 @@ const Tareas = ({ tareas }: TareasProps) => {
 
 
 
-                            <Select
-                                value={newTask.Categoria.name}
-                                onValueChange={(value) => {
-                                    const selectedCategory = categories.find(cat => cat.name === value);
-                                    if (selectedCategory) {
-                                        setNewTask({ ...newTask, Categoria: selectedCategory }); // Establece la categoría completa
-                                    }
-                                }}
-                            >
-                                <SelectTrigger className="bg-white">
-                                    <SelectValue placeholder="Seleccionar categoría" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {categories.map((category) => (
-                                        <SelectItem key={category.name} value={category.name}>
-                                            <div className="flex items-center">
-                                                <div className={`w-3 h-3 rounded-full mr-2`} style={{ backgroundColor: category.color }} />
-                                                {category.name}
-                                            </div>
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
 
-                            <Select
-                                value={newTask.Prioridad}
-                                onValueChange={(value: Priority) => setNewTask({ ...newTask, Prioridad: value })}
-
-                            >
-                                <SelectTrigger className="bg-white">
-                                    <SelectValue placeholder="Seleccionar prioridad" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="low">Baja</SelectItem>
-                                    <SelectItem value="medium">Media</SelectItem>
-                                    <SelectItem value="high">Alta</SelectItem>
-                                </SelectContent>
-                            </Select>
 
                             <div className="mb-4 col-start-2 col-span-2 mx-10  p-4 rounded-lg transition-all duration-300 border-r-8 border-b-8 border-spacing-4 cristalizado shadow-inner"
                                 style={{ borderColor: newTask.Categoria.color }}>
@@ -470,63 +451,70 @@ const Tareas = ({ tareas }: TareasProps) => {
                         </motion.form>)}
                 </AnimatePresence>
             </motion.div>
-            <div className="h-[60vh] pr-4">
-                <ul className="space-y-2 mt-4">
-                    {listaTareas.map((tarea, index) => (
-                        <motion.div
-                            key={index}
-                            draggable
-                            onDragStart={(e) => handleDragStart(e as unknown as React.DragEvent<HTMLDivElement>, index)} // Type assertion
-                            onDragOver={(e) => handleDragOver(e as React.DragEvent<HTMLDivElement>, index)} // Type assertion
-                            onDrop={(e) => handleDrop(e as React.DragEvent<HTMLDivElement>, index)} // Type assertion
-                            className={cn(
-                                "mb-4 p-4 rounded-lg transition-all duration-300 cursor-grab border-r-8 border-b-8 border-spacing-4 cristalizado shadow-inner",
-                                draggingIndex === index ? "bg-gray-300" : "bg-white",
-                                tarea.Hecho ? "cristalizadooff line-through border-0" : "" // Añadir clase condicionalmente
-                            )}
-                            animate={{
-                                opacity: draggingIndex === index ? 0.5 : 1, // Reduce opacidad al arrastrar
-                                y: draggingIndex === index ? 0 : undefined,
-                                transition: { type: "tween", ease: "linear", duration: 0.1 }
-                            }}
-                            style={{ zIndex: draggingIndex === index ? 100 : 1, borderColor: tarea.Categoria.color }}
-                        >
+            <div className="h-[calc(100vh-200px)] overflow-y-auto pr-4 mb-20">
+                <Reorder.Group axis="y" values={listaTareas} onReorder={setListaTareas}>
+                    <AnimatePresence>
 
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center space-x-3">
-                                    <input
-                                        type="checkbox"
-                                        checked={tarea.Hecho}
-                                        onChange={() => handleCheckboxChange(index)}
-                                        className="mr-2 cursor-pointer"
-                                    />
-                                    <h3 className={cn("text-lg font-semibold", tarea.Hecho ? "line-through" : "")}>{tarea.Titulo}</h3>
-                                    <p className={cn("mt-2 text-sm", tarea.Hecho ? "text-gray-500 line-through" : "text-gray-600 dark:text-gray-300")}>{tarea.Descripcion}</p>
-                                </div>
-                                <Badge className={cn("text-xs font-medium", getPrioridadColor(tarea.Prioridad))}>
-                                    {tarea.Prioridad}
-                                </Badge>
-                            </div>
+                        {listaTareas.map((tarea, index) => (
+                            <Reorder.Item key={tarea.Titulo} value={tarea} as="div">
+                                <motion.div
+                                    layout
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -20 }}
+                                    transition={{
+                                        type: "spring",
+                                        stiffness: 500,
+                                        damping: 30,
+                                        opacity: { duration: 0.2 }
+                                    }} // Type assertion
+                                    className={cn(
+                                        "mb-4 p-4 rounded-lg transition-all duration-300 cursor-grab border-r-8 border-b-8 border-spacing-4 cristalizado shadow-inner",
+                                        draggingIndex === index ? "bg-gray-300" : "bg-white",
+                                        tarea.Hecho ? "cristalizadooff line-through border-0" : "")}
+                                    whileHover={{ scale: 0.98, boxShadow: "0 5px 15px rgba(0,0,0,0.1)" }}
+                                    whileTap={{ scale: 0.98 }}
+                                    style={{ zIndex: draggingIndex === index ? 100 : 1, borderColor: tarea.Categoria.color }}
+                                >
 
-                            <div className="mt-3 flex items-center justify-between text-sm text-gray-500">
-                                <span className="flex items-center">
-                                    <CalendarIcon className="mr-1 h-4 w-4" />
-                                    {format(tarea.Fecha_Inicio, 'dd-MM-yyyy')}
-                                </span>
-                                <Badge variant="outline" style={{ borderColor: tarea.Categoria.color }}>{tarea.Categoria.name}</Badge>
-                            </div>
-                        </motion.div>
-                    ))}
-                    {/* Add placeholder for the dragging task */}
-                    {draggingIndex !== null && (
-                        <motion.div
-                            key="placeholder"
-                            className="mb-4 p-4 rounded-lg shadow-md bg-gray-300 opacity-50"
-                            style={{ height: 'auto', zIndex: 50 }} // Match the height of the item
-                            layout // Automatically adjusts the layout
-                        />
-                    )}
-                </ul>
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center space-x-3">
+                                            <input
+                                                type="checkbox"
+                                                checked={tarea.Hecho}
+                                                onChange={() => handleCheckboxChange(index)}
+                                                className="mr-2 cursor-pointer"
+                                            />
+                                            <h3 className={cn("text-lg font-semibold", tarea.Hecho ? "line-through" : "")}>{tarea.Titulo}</h3>
+                                            <p className={cn("mt-2 text-sm", tarea.Hecho ? "text-gray-500 line-through" : "text-gray-600 dark:text-gray-300")}>{tarea.Descripcion}</p>
+                                        </div>
+                                        <Badge className={cn("text-xs font-medium", getPrioridadColor(tarea.Prioridad))}>
+                                            {tarea.Prioridad}
+                                        </Badge>
+                                    </div>
+
+                                    <div className="mt-3 flex items-center justify-between text-sm text-gray-500">
+                                        <span className="flex items-center">
+                                            <CalendarIcon className="mr-1 h-4 w-4" />
+                                            {format(tarea.Fecha_Inicio, 'dd-MM-yyyy')}
+                                        </span>
+                                        <Badge variant="outline" style={{ borderColor: tarea.Categoria.color }}>{tarea.Categoria.name}</Badge>
+                                    </div>
+                                </motion.div>
+                            </Reorder.Item>
+                        ))}
+                        {/* Add placeholder for the dragging task */}
+                        {draggingIndex !== null && (
+                            <motion.div
+                                key="placeholder"
+                                className="mb-4 p-4 rounded-lg shadow-md bg-gray-300 opacity-50"
+                                style={{ height: 'auto', zIndex: 50 }} // Match the height of the item
+                                layout // Automatically adjusts the layout
+                            />
+                        )}
+
+                    </AnimatePresence>
+                </Reorder.Group>
             </div>
 
 
