@@ -35,7 +35,7 @@ interface Tarea {
     Hecho: boolean;
     FullDay: boolean;
     Fecha_Fin: Date;
-    Tipo:string;
+    Tipo: string;
 }
 interface Category {
 
@@ -71,7 +71,7 @@ const TablaDia = () => {
     const [events, setEvents] = useState<Tarea[]>([]);
     const timeContainerRef = useRef<HTMLDivElement>(null);
     const [currentDate, setCurrentDate] = useState(() => {
-        
+
         return new Date(2024, 9, 22) // October 22, 2024 (month is 0-indexed)
     })
     const [currentTime, setCurrentTime] = useState(new Date());
@@ -83,7 +83,7 @@ const TablaDia = () => {
     const [dragEnd, setDragEnd] = useState<{ day: Date } | null>(null)
     const [showForm, setShowForm] = useState(false)
     const [newTask, setNewTask] = useState<Tarea>({
-        Id:0,
+        Id: 0,
         Titulo: "",
         Descripcion: "",
         Categoria: { id: 0, name: "", color: "" },
@@ -128,29 +128,30 @@ const TablaDia = () => {
         e.preventDefault()
         console.log(newTask.Categoria)
         if (newTask.Titulo && newTask.Fecha_Inicio && newTask.Fecha_Fin) {
-          const createdEvent: Tarea = {
-            Id: 0,
-            Titulo: newTask.Titulo,
-            Descripcion: newTask.Descripcion || "",
-            Categoria: { id: newTask.Categoria.id, name: newTask.Categoria.name, color: newTask.Categoria.color },
-            Prioridad: newTask.Prioridad || "Media",
-            Fecha_Inicio: newTask.Fecha_Inicio,
-            Fecha_Fin: newTask.Fecha_Fin,
-            Hecho: false,
-            FullDay: false,
-            Tipo:"Evento"
-          }
-          console.log(createdEvent)
-          enviar(createdEvent)
-          
-          setShowForm(false)
+            const createdEvent: Tarea = {
+                Id: 0,
+                Titulo: newTask.Titulo,
+                Descripcion: newTask.Descripcion || "",
+                Categoria: { id: newTask.Categoria.id, name: newTask.Categoria.name, color: newTask.Categoria.color },
+                Prioridad: newTask.Prioridad || "Media",
+                Fecha_Inicio: newTask.Fecha_Inicio,
+                Fecha_Fin: newTask.Fecha_Fin,
+                Hecho: false,
+                FullDay: false,
+                Tipo: "Evento"
+            }
+            console.log(createdEvent)
+            enviar(createdEvent)
+
+            setShowForm(false)
         }
-      }
-    
+    }
+
     useEffect(() => {
         recibir();
 
     }, []);
+    
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -162,17 +163,17 @@ const TablaDia = () => {
     }, []);
     useEffect(() => {
         const scrollToCurrentTime = () => {
-          if (timeContainerRef.current) {
-            const currentHour = currentTime.getHours()
-            const currentMinute = currentTime.getMinutes()
-            const totalMinutes = currentHour * 60 + currentMinute
-            const scrollPosition = (totalMinutes / 1440) * timeContainerRef.current.scrollHeight
-            timeContainerRef.current.scrollTop = scrollPosition - timeContainerRef.current.clientHeight / 2
-          }
+            if (timeContainerRef.current) {
+                const currentHour = currentTime.getHours()
+                const currentMinute = currentTime.getMinutes()
+                const totalMinutes = currentHour * 60 + currentMinute
+                const scrollPosition = (totalMinutes / 1440) * timeContainerRef.current.scrollHeight
+                timeContainerRef.current.scrollTop = scrollPosition - timeContainerRef.current.clientHeight / 2
+            }
         }
-    
+
         scrollToCurrentTime()
-      }, [currentTime])
+    }, [currentTime])
 
 
     const calculateLinePosition = (now: Date) => {
@@ -282,31 +283,31 @@ const TablaDia = () => {
                 ...prev,
                 Fecha_Inicio: startDate,
                 Fecha_Fin: endDate,
-              }));
+            }));
 
-              let x = e.clientX + window.scrollX;
-              let y = e.clientY + window.scrollY;
-              const menuWidth = 320; // Ancho del menú (ajusta según sea necesario)
-              const menuHeight = 400; // Alto del menú (ajusta según sea necesario)
-              const viewportWidth = window.innerWidth;
-              const viewportHeight = window.innerHeight;
+            let x = e.clientX + window.scrollX;
+            let y = e.clientY + window.scrollY;
+            const menuWidth = 320; // Ancho del menú (ajusta según sea necesario)
+            const menuHeight = 400; // Alto del menú (ajusta según sea necesario)
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
 
-              if (x + menuWidth > viewportWidth) {
+            if (x + menuWidth > viewportWidth) {
                 x = viewportWidth - menuWidth;
-              }
-              if (x < 0) {
+            }
+            if (x < 0) {
                 x = 0;
-              }
-              if (y + menuHeight > viewportHeight) {
+            }
+            if (y + menuHeight > viewportHeight) {
                 console.log(y)
-                y = viewportHeight - 1.5*menuHeight;
+                y = viewportHeight - 2 * menuHeight;
                 console.log(y)
-              }
-              if (y < 0) {
+            }
+            if (y < 0) {
                 y = 20;
-              }
-              setMenuPosition({ x, y });
-              setShowForm(true);
+            }
+            setMenuPosition({ x, y });
+            setShowForm(true);
 
         }
     }
@@ -314,11 +315,11 @@ const TablaDia = () => {
         setShowForm(false);
         setDragStart(null);
         setDragEnd(null);
-      };
+    };
 
     const renderPlaceholderEvent = () => {
         if (!dragStart && !showForm) return null;
-        if (!dragStart || !dragEnd ) return null;
+        if (!dragStart || !dragEnd) return null;
         let startDate = new Date(dragStart.day);
         let endDate = new Date(dragEnd.day);
 
@@ -338,7 +339,7 @@ const TablaDia = () => {
         const heightPercentage = (durationInMinutes / 1440) * 100;
         const startOffsetInMinutes = differenceInMinutes(startDate, startOfDay(startDate));
         const topPercentage = (startOffsetInMinutes / 1440) * 100;
-        
+
         return (
             <motion.div
                 className="absolute left-0 right-0 bg-primary-foreground border-2 border-primary rounded-md opacity-50 z-10"
@@ -364,8 +365,9 @@ const TablaDia = () => {
 
 
     return (
-        <div className="w-5/6 max-h-screen overflow-auto mx-auto h-[75vh]" ref={timeContainerRef}>
-            <div className="flex justify-between items-center p-4 bg-primary text-primary-foreground">
+        <div className="border-b-4 w-5/6 max-h-screen overflow-auto mx-auto h-[75vh]" ref={timeContainerRef}>
+           <div className="sticky top-0 z-10">
+           <div className="flex justify-between items-center p-4 bg-primary text-primary-foreground">
                 <Button onClick={handlePrevWeek} variant="ghost" size="icon">
                     <ChevronLeft className="h-4 w-4" />
                 </Button>
@@ -387,7 +389,7 @@ const TablaDia = () => {
                     <ChevronRight className="h-4 w-4" />
                 </Button>
             </div>
-            <div className="flex flex-row sticky top-0 bg-white z-10">
+            <div className="flex flex-row  bg-white z-10">
 
                 <div className="w-24 p-2 font-bold align-middle bg-muted h-12" ></div>
                 {weekDays.map((day, index) => (
@@ -401,6 +403,8 @@ const TablaDia = () => {
                     </div>
                 ))}
             </div>
+           </div>
+            
 
             {/* Contenedor para las horas y eventos */}
             <div className="flex flex-row">
@@ -429,8 +433,9 @@ const TablaDia = () => {
                             // Verificar si el día es el actual
                             const isCurrentDay = isSameDay(day, currentTime);
 
+
                             return (
-                                <div className="flex-1 p-2  border-l border-b border-gray-300 relative" key={index}
+                                <div className="flex-1  border-l border-b border-gray-300 relative" key={index}
                                     onMouseDown={() => handleDragStart(slotStart)}
                                     onMouseMove={() => handleDragMove(slotEnd)}
                                     onMouseUp={handleDragEnd}>
@@ -443,30 +448,57 @@ const TablaDia = () => {
                                         const isEventInSlot =
                                             isWithinInterval(slotStart, { start: eventStart, end: eventEnd });
 
-                                        if (isEventInSlot) {
+                                        const isFirstSlot = slotStart.getTime() === eventStart.getTime();
+                                        if (isEventInSlot && isFirstSlot) {
+                                            console.log(`Rendering event ${eventIndex} on day ${format(day, "yyyy-MM-dd")} in slot ${index}`);
                                             const durationInMinutes = differenceInMinutes(eventEnd, eventStart);
                                             const heightPercentage = (durationInMinutes / 30) * 100;
                                             const startOffsetInMinutes = differenceInMinutes(eventStart, slotStart);
                                             const topPercentage = (startOffsetInMinutes / 30) * 100;
 
+                                            const overlappingEvents = events.filter(e =>
+                                                (isWithinInterval(eventStart, { start: e.Fecha_Inicio, end: e.Fecha_Fin }) ||
+                                                    isWithinInterval(eventEnd, { start: e.Fecha_Inicio, end: e.Fecha_Fin })) ||
+                                                (isWithinInterval(e.Fecha_Inicio, { start: eventStart, end: eventEnd }) ||
+                                                    isWithinInterval(e.Fecha_Fin, { start: eventStart, end: eventEnd }))
+                                            );
+                                            const zIndex = overlappingEvents.length - overlappingEvents.indexOf(event);
+
+                                            const eventStyles = event.Tipo === "Evento" ? {
+                                                margin: "0",
+                                                borderWidth: "2px",
+                                                backgroundColor: lightenColor(event.Categoria.color, 40),
+                                              } : {
+                                                marginLeft: ".5rem",
+                                                marginRight:".5rem",
+                                                borderWidth: "1px",
+                                                backgroundColor: lightenColor(event.Categoria.color, 70),
+                                              };
+                                            
+
                                             return (
                                                 <motion.div
                                                     key={eventIndex}
-                                                    className="absolute left-0 right-0 font-bold p-1 rounded-md border mx-2"
+                                                    className="absolute left-0 right-0 font-bold rounded-md border mx-2"
                                                     style={{
                                                         top: `${topPercentage}%`,
                                                         height: `${heightPercentage}%`,
-
                                                         borderColor: event.Categoria.color,
                                                         color: event.Categoria.color,
-                                                        backgroundColor: lightenColor(event.Categoria.color, 70),
+                                                        
+                                                        zIndex: zIndex,
+                                                        
+                                                        left: `${overlappingEvents.indexOf(event) * 0.9}%`,
+                                                        ...eventStyles
+
                                                     }}
                                                     initial={{ opacity: 0, scale: 0.9 }}
-                                                    animate={{ opacity: 1, scale: 1 }}
+                                                    animate={{ opacity: 0.8, scale: 1 }}
                                                     transition={{ duration: 0.3 }}
                                                     whileHover={{ scale: 1.05 }}
                                                 >
-                                                    {event.Titulo}
+                                                    <span className="text-center mx-auto">{event.Titulo}</span>
+                                                    
                                                     <p className="text-l font-normal ">{format(eventStart, "HH:mm")}-{format(eventEnd, "HH:mm")}</p>
                                                 </motion.div>
                                             );
@@ -480,104 +512,139 @@ const TablaDia = () => {
                                         isAfter(currentTime, slot.start) &&
                                         isBefore(currentTime, slot.end) && (
                                             <motion.div
-                                                className="absolute w-full border-t-2 border-red-500 z-20 left-0"
+                                                className="absolute w-full h-0.5 bg-gradient-to-r from-red-600 via-red-500 to-red-400 z-20 left-0"
                                                 style={{ top: `${linePosition}%` }}
-                                                initial={{ scaleX: 0 }}
-                                                animate={{ scaleX: 1 }}
-                                                transition={{ duration: 0.5 }}
-                                            ></motion.div>
+                                                initial={{ scaleX: 0, opacity: 0 }}
+                                                animate={{ scaleX: 1, opacity: 1 }}
+                                                transition={{ duration: 0.5, ease: "easeInOut" }}
+                                            >
+                                                <motion.div
+                                                    className="absolute -left-1.5 -top-1.5 w-3 h-3 bg-red-600 rounded-full shadow-lg"
+                                                    initial={{ scale: 0 }}
+                                                    animate={{ scale: 1 }}
+                                                    transition={{ delay: 0.2, type: "spring", stiffness: 300, damping: 15 }}
+                                                />
+                                                <motion.div
+                                                    className="absolute -right-16 -top-4 bg-red-600 text-white text-xs font-semibold py-1 px-2 rounded-full shadow-lg flex items-center space-x-1"
+                                                    initial={{ opacity: 0, y: 10 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    transition={{ delay: 0.3, duration: 0.3 }}
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                    </svg>
+                                                    <span>{format(currentTime, "HH:mm")}</span>
+                                                </motion.div>
+                                            </motion.div>
                                         )}
                                 </div>
                             );
                         })}
                         {dragStart && isSameDay(day, dragStart.day) && renderPlaceholderEvent()}
                     </div>
-                    
+
                 ))}
             </div>
-             <AnimatePresence>
-              {showForm && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ type: "spring", damping: 15, stiffness: 300 }}
-                  style={{
-                    position: "absolute",
-                    left: `${menuPosition.x}px`,
-                    top: `${menuPosition.y}px`,
-                    transform: "translate(-50%, -50%)",
-                  }}
-                  className="z-50"
-                >
-                  <Card className="w-80">
-                    <CardHeader>
-                      <CardTitle>Crear nuevo evento</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <form onSubmit={handleCreateEvent} className="space-y-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="title">Título</Label>
-                          <Input
-                            id="title"
-                            value={newTask.Titulo}
-                            onChange={(e) => setNewTask((prev) => ({ ...prev, Titulo: e.target.value }))}
-                            required
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="description">Descripción</Label>
-                          <Input
-                            id="description"
-                            value={newTask.Descripcion}
-                            onChange={(e) => setNewTask((prev) => ({ ...prev, Descripcion: e.target.value }))}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="category">Categoría</Label>
-                          <Select
-                                    value={newTask.Categoria.name}
-                                    onValueChange={(value) => {
-                                        const selectedCategory = categories.find(cat => cat.name === value);
-                                        if (selectedCategory) {
-                                            setNewTask({ ...newTask, Categoria: selectedCategory }); // Establece la categoría completa
-                                        }
-                                    }}
+            <AnimatePresence>
+                {showForm && (
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ type: "spring", damping: 15, stiffness: 300 }}
+                        style={{
+                            position: "absolute",
+                            left: `${menuPosition.x}px`,
+                            top: `${menuPosition.y}px`,
+                            transform: "translate(-50%, -50%)",
+                        }}
+                        className="z-50"
+                    >
+                        <Card className="w-80">
+                            <CardHeader>
+                                <CardTitle>Crear nuevo evento</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <form onSubmit={handleCreateEvent} className="space-y-4">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="title">Título</Label>
+                                        <Input
+                                            id="title"
+                                            value={newTask.Titulo}
+                                            onChange={(e) => setNewTask((prev) => ({ ...prev, Titulo: e.target.value }))}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="description">Descripción</Label>
+                                        <Input
+                                            id="description"
+                                            value={newTask.Descripcion}
+                                            onChange={(e) => setNewTask((prev) => ({ ...prev, Descripcion: e.target.value }))}
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="category">Categoría</Label>
+                                        <Select
+                                            value={newTask.Categoria.name}
+                                            onValueChange={(value) => {
+                                                const selectedCategory = categories.find(cat => cat.name === value);
+                                                if (selectedCategory) {
+                                                    setNewTask({ ...newTask, Categoria: selectedCategory }); // Establece la categoría completa
+                                                }
+                                            }}
+                                        >
+                                            <SelectTrigger className="bg-white">
+                                                <SelectValue placeholder="Seleccionar categoría" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {categories.map((category) => (
+                                                    <SelectItem key={category.name} value={category.name}>
+                                                        <div className="flex items-center">
+                                                            <div className={`w-3 h-3 rounded-full mr-2`} style={{ backgroundColor: category.color }} />
+                                                            {category.name}
+                                                        </div>
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div className="space-y-2">
+                                    <Label htmlFor="priority">Prioridad</Label>
+                                    <Select
+                                    value={newTask.Prioridad}
+                                    onValueChange={(value: string) => setNewTask({ ...newTask, Prioridad: value })}
+
                                 >
-                             <SelectTrigger className="bg-white">
-                                        <SelectValue placeholder="Seleccionar categoría" />
+                                    <SelectTrigger className="bg-white">
+                                        <SelectValue placeholder="Seleccionar prioridad" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {categories.map((category) => (
-                                            <SelectItem key={category.name} value={category.name}>
-                                                <div className="flex items-center">
-                                                    <div className={`w-3 h-3 rounded-full mr-2`} style={{ backgroundColor: category.color }} />
-                                                    {category.name}
-                                                </div>
-                                            </SelectItem>
-                                        ))}
+                                        <SelectItem value="low">Baja</SelectItem>
+                                        <SelectItem value="medium">Media</SelectItem>
+                                        <SelectItem value="high">Alta</SelectItem>
                                     </SelectContent>
-                          </Select>
-                        </div>
-                        <div className="space-y-2">
-                          <Label>Fecha de inicio</Label>
-                          <Input value={newTask.Fecha_Inicio ? format(newTask.Fecha_Inicio, "dd/MM/yyyy HH:mm") : ""} disabled />
-                        </div>
-                        <div className="space-y-2">
-                          <Label>Fecha de fin</Label>
-                          <Input value={newTask.Fecha_Fin ? format(newTask.Fecha_Fin, "dd/MM/yyyy HH:mm") : ""} disabled />
-                        </div>
-                      </form>
-                    </CardContent>
-                    <CardFooter className="flex justify-between">
-                      <Button variant="outline" onClick={handleCloseForm}>
-                        Cancelar
-                      </Button>
-                      <Button onClick={handleCreateEvent}>Crear evento</Button>
-                    </CardFooter>
-                  </Card>
-                </motion.div>
-              )}
+                                </Select>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Fecha de inicio</Label>
+                                        <Input value={newTask.Fecha_Inicio ? format(newTask.Fecha_Inicio, "dd/MM/yyyy HH:mm") : ""} disabled />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Fecha de fin</Label>
+                                        <Input value={newTask.Fecha_Fin ? format(newTask.Fecha_Fin, "dd/MM/yyyy HH:mm") : ""} disabled />
+                                    </div>
+                                </form>
+                            </CardContent>
+                            <CardFooter className="flex justify-between">
+                                <Button variant="outline" onClick={handleCloseForm}>
+                                    Cancelar
+                                </Button>
+                                <Button onClick={handleCreateEvent}>Crear evento</Button>
+                            </CardFooter>
+                        </Card>
+                    </motion.div>
+                )}
             </AnimatePresence>
         </div>
     );
