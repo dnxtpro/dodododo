@@ -12,6 +12,7 @@ import Tasks from './Tasks'
 import Hero from './Hero'
 import { motion ,AnimatePresence} from 'framer-motion'
 import { Toaster } from 'react-hot-toast';
+import Gestionador from './Gestionador'
 
 
 function App() {
@@ -42,8 +43,8 @@ function App() {
   };
   return (
     <>
-      <div className="w-full flex flex-col">
-        <Navbar />
+      <div className="w-full flex flex-col overflow-y-hidden max-h-screen">
+        <Navbar  />
       <Toaster/>
         <div className="">
         <AnimatePresence mode="wait">
@@ -78,6 +79,7 @@ function App() {
           } />
             <Route path="/task" element={<Tasks />} />
             <Route path="/tabla" element={<TablaDia />} />
+            <Route path="/gestionar" element={<Gestionador />} />
             <Route path="/calendar" element={<Calendar events={[{ date: subDays(new Date(), 6), title: "sexo matutino", description: "sexo deverdad" }]} onDateSelect={handleDateSelect} />} />
 
           </Routes>

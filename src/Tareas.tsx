@@ -165,8 +165,8 @@ const Tareas = ({ tareas }: TareasProps) => {
     }
 
     return (
-        <div className="relative">
-            <Card>
+        <div className="mt-20 mx-auto w-1/4">
+            <Card className="my-4">
                 <CardHeader>
                     <CardTitle>Tareas</CardTitle>
 
@@ -177,11 +177,11 @@ const Tareas = ({ tareas }: TareasProps) => {
                 initial={false}
                 animate={{ height: isFormExpanded ? 'auto' : '60px' }}
                 transition={{ duration: 0.3 }}
-                className="fixed z-50 bottom-0 left-0 right-0 bg-accent shadow-lg rounded-t-xl overflow-hidden backdrop-blur-md "
+                className="fixed z-40 bottom-0 left-0 right-0 bg-accent shadow-lg rounded-t-xl overflow-hidden backdrop-blur-md "
             >
                 <Button
                     variant="ghost"
-                    className="w-full h-[60px] flex items-center justify-center text-lg font-semibold  "
+                    className="w-full h-[60px]  flex items-center justify-center text-lg font-semibold  "
                     onClick={() => setIsFormExpanded(!isFormExpanded)}
                 >
                     {isFormExpanded ? (
