@@ -10,7 +10,7 @@ import { LogIn, UserPlus, Home, ListTodo, CalendarDays } from "lucide-react";
 
 export default function Navbar() {
   return (
-    <header className="border-b bg-gradient-to-r from-pink-200 via-purple-200 to-blue-200 sticky top-0 w-screen z-50">
+    <header className=" bg-gradient-to-r from-pink-200 via-purple-200 to-blue-200 sticky top-0 w-screen z-50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between text-purple-900 font-bold">
           <NavigationMenu>
