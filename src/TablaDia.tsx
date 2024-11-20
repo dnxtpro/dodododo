@@ -101,7 +101,7 @@ const TablaDia = () => {
   const [dragStart, setDragStart] = useState<{ day: Date } | null>(null);
   const [dragEnd, setDragEnd] = useState<{ day: Date } | null>(null);
   const [showForm, setShowForm] = useState(false);
-  const [showHorario, setShowHorario] = useState(false);
+  const [, setShowHorario] = useState(false);
   const [newTask, setNewTask] = useState<Tarea>({
     Id: 0,
     Titulo: "",
